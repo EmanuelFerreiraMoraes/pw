@@ -1,0 +1,2510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dicionário</title>
+    <link rel="stylesheet" href="src/styles/dicionario.css">
+</head>
+<body>
+
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Pesquise um termo...">
+    </div>
+
+    <div class="category-links" id="category-nav"></div>
+
+    <div id="card-container" class="card-container"></div>
+
+    <div id="modal-frame" class="modal hidden">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <img id="modal-image" class="modal-image" src="" alt="">
+            <div class="modal-text">
+                <h2 id="modal-title"></h2>
+                <p id="modal-category"></p>
+                <p id="modal-description"></p>
+            </div>
+        </div>
+    </div>
+    
+    
+
+    <script>
+        const terms = [
+  { 
+    term: "1-hidroxi-2-metil-benzeno", 
+    category: "Fenóis", 
+    definition: "O 1-hidroxi-2-metil-benzeno, também conhecido como o-cresol, é um composto aromático com um grupo hidroxila (-OH) ligado a um anel benzeno com um grupo metil (–CH3) na posição 2. É um fenol utilizado em várias aplicações, incluindo desinfetantes e como intermediário na produção de outros compostos químicos.", 
+    image: "src/dicionario/1-hidroxi-2-metil-benzeno.png" 
+  },
+  { 
+    term: "1-hidroxi-2,4-dimetil-benzeno", 
+    category: "Fenóis", 
+    definition: "O 1-hidroxi-2,4-dimetil-benzeno é um composto aromático com um grupo hidroxila (-OH) ligado a um anel benzeno e dois grupos metil (–CH3) nas posições 2 e 4. Também conhecido como 2,4-dimetilfenol, tem aplicações em química orgânica como intermediário e em produtos industriais.", 
+    image: "src/dicionario/1-hidroxi-2,4-dimetil-benzeno.png" 
+  },
+  { 
+    term: "1-hidroxi-3-etil-benzeno", 
+    category: "Fenóis", 
+    definition: "O 1-hidroxi-3-etil-benzeno, também chamado de 3-etilfenol, é um composto aromático com um grupo hidroxila (-OH) ligado a um anel benzeno e um grupo etil (–C2H5) na posição 3. Ele é utilizado em diversas indústrias químicas e como intermediário na síntese de outros compostos.", 
+    image: "src/dicionario/1-hidroxi-3-etil-benzeno.png" 
+  },
+  { 
+    term: "1-hidroxi-3-metil-benzeno", 
+    category: "Fenóis", 
+    definition: "O 1-hidroxi-3-metil-benzeno, ou m-cresol, é um composto orgânico derivado do benzeno, contendo um grupo hidroxila (-OH) e um grupo metil (–CH3) na posição 3 do anel benzênico. O m-cresol tem diversas aplicações industriais, incluindo como desinfetante, solvente e precursor para a síntese de outros produtos químicos.", 
+    image: "src/dicionario/1-hidroxi-3-metil-benzeno.png" 
+  },
+  { 
+    term: "1-hidroxi-4-metil-benzeno", 
+    category: "Fenóis", 
+    definition: "O 1-hidroxi-4-metil-benzeno, também conhecido como p-cresol, é um fenol com um grupo hidroxila (-OH) e um grupo metil (–CH3) na posição 4 do anel benzeno. É usado em várias indústrias, incluindo na fabricação de desinfetantes e na síntese de produtos químicos.", 
+    image: "1-hidroxi-4-metil-benzeno.png" 
+  },
+  { 
+    term: "2,6-dietil-hidroxi-benzeno", 
+    category: "Fenóis", 
+    definition: "O 2,6-dietil-hidroxi-benzeno é um composto fenolico com dois grupos etil (–C2H5) na posição 2 e 6 e um grupo hidroxila (-OH) no anel benzeno. Tem aplicações industriais e é usado como intermediário na síntese de outros compostos químicos.", 
+    image: "2,6-dietil-hidroxi-benzeno.png" 
+  },
+  { 
+    term: "Absorbância", 
+    category: "Química", 
+    definition: "A absorbância é uma medida da capacidade de uma substância de absorver luz em uma determinada faixa de comprimento de onda. É uma função da concentração de uma substância e da distância percorrida pela luz através da amostra. A absorbância é geralmente medida em espectrofotometria.", 
+    image: "absorbancia.png" 
+  },
+  { 
+    term: "Absorção", 
+    category: "Física", 
+    definition: "Absorção é o processo no qual uma substância absorve energia, como luz, calor ou radiação. Em química, refere-se à capacidade de uma substância de capturar moléculas de outra substância (por exemplo, absorção de gases por sólidos ou líquidos).", 
+    image: "absorcao.png" 
+  },
+  { 
+    term: "Ácidos", 
+    category: "Química", 
+    definition: "Um ácido pode ser descrito como uma substância que libera ou produz íons de hidrogênio (H+) quando dissolvida em água. As fórmulas dos ácidos contêm um ou mais átomos de hidrogênio e um grupo aniônico. Os ânions cujo nome termina em '-eto' formam ácidos com uma terminação em '-ico'.", 
+    image: "acidos.png" 
+  },
+  { 
+    term: "Alcadienos", 
+    category: "Hidrocarbonetos", 
+    definition: "Alcadienos são hidrocarbonetos insaturados que contêm duas ligações duplas carbono-carbono em sua estrutura. Estes compostos são utilizados em várias reações químicas, como na síntese de outros hidrocarbonetos e produtos químicos.", 
+    image: "alcadienos.png" 
+  },
+  { 
+    term: "Alcalimetria", 
+    category: "Química", 
+    definition: "Alcalimetria é o ramo da química analítica que envolve a medição da quantidade de uma substância alcalina (básica) em uma amostra, geralmente utilizando uma solução padrão para titulação e determinar o ponto de equivalência.", 
+    image: "alcalimetria.png" 
+  },
+  { 
+    term: "Alcalinidade", 
+    category: "Química", 
+    definition: "Alcalinidade é a capacidade de uma solução aquosa de neutralizar ácidos. Em outras palavras, é a concentração de bases ou substâncias alcalinas em uma solução, que podem reagir com ácidos para formar água e sais.", 
+    image: "" 
+  },
+  { 
+    term: "Alcanos", 
+    category: "Hidrocarbonetos", 
+    definition: "Alcanos são hidrocarbonetos que apresentam átomos de carbono participando apenas de ligações simples com outros átomos de carbono. Os alcanos constituem compostos com cadeias carbônicas saturadas, ao passo que os alquenos e também os alquinos (ou alcinos), como veremos mais adiante, constituem compostos com cadeias carbônicas insaturadas.", 
+    image: "" 
+  },
+  { 
+    term: "Alcenos", 
+    category: "Hidrocarbonetos", 
+    definition: "Alcenos são hidrocarbonetos insaturados que possuem pelo menos uma ligação dupla entre átomos de carbono. São importantes na indústria química para a produção de plásticos e outros compostos orgânicos.", 
+    image: "" 
+  },
+  { 
+    term: "Alcinos", 
+    category: "Hidrocarbonetos", 
+    definition: "Alcinos são hidrocarbonetos insaturados que contêm pelo menos uma ligação tripla entre átomos de carbono. Eles são importantes para a síntese de compostos orgânicos e têm diversas aplicações industriais.", 
+    image: "" 
+  },
+  { 
+    term: "Aldeído", 
+    category: "Funções Orgânicas", 
+    definition: "Os aldeídos são compostos orgânicos que apresentam o grupo carbonila (–C=O) na extremidade da cadeia. A numeração da cadeia dos aldeídos sempre começa da extremidade que contém o grupo carbonila, por isso não é preciso indicar o 1.", 
+    image: "src/dicionario/aldeido.png" 
+  },
+  { 
+    term: "Aldoxila", 
+    category: "Funções Orgânicas", 
+    definition: "Aldoxila é uma classe de compostos químicos contendo um grupo hidroxila (-OH) ligado a um átomo de carbono em uma posição adjacente a um grupo carbonila (–C=O).", 
+    image: "src/dicionario/aldoxila.png" 
+  },
+  { 
+    term: "Amônia", 
+    category: "Química", 
+    definition: "A amônia (NH3) é um gás incolor com um cheiro forte e penetrante. É um composto nitrogenado que ocorre naturalmente e também é amplamente utilizado na indústria, especialmente na fabricação de fertilizantes e produtos químicos.", 
+    image: "" 
+  },
+  { 
+    term: "Antibioticoterapia", 
+    category: "Química", 
+    definition: "Antibioticoterapia é o tratamento de infecções causadas por microrganismos, como bactérias, utilizando medicamentos chamados antibióticos. A escolha do antibiótico depende do tipo de infecção e do microrganismo causador.", 
+    image: "" 
+  },
+  { 
+    term: "Aquecimento", 
+    category: "Física", 
+    definition: "Aquecimento é o processo de aumento da temperatura de um corpo ou substância. Esse processo pode ser causado por diversas fontes de energia, como calor ou radiação, e pode alterar as propriedades físicas e químicas do material envolvido.", 
+    image: "" 
+  },
+  { 
+    term: "Balança", 
+    category: "Laboratório", 
+    definition: "A balança de precisão permite determinar a massa de substâncias com alta exatidão, com capacidade de medir até poucos miligramas. É usada em laboratórios e em atividades que exigem medições precisas de massa.", 
+    image: "" 
+  },
+  { 
+    term: "Baumé", 
+    category: "Química", 
+    definition: "A escala Baumé é uma escala hidrométrica usada para medir a densidade de líquidos. Ela é baseada na medição do peso específico, com a escala sendo ajustada para diferentes líquidos e suas temperaturas.", 
+    image: "" 
+  },
+  { 
+    term: "Boro", 
+    category: "Química", 
+    definition: "O boro é um elemento químico com símbolo B e número atômico 5. Ele é um semimetal utilizado em diversos processos industriais, como a fabricação de vidros resistentes ao calor e materiais semicondutores.", 
+    image: "" 
+  },
+  { 
+    term: "Brix", 
+    category: "Química", 
+    definition: "A escala Brix é uma unidade de medida usada para expressar a concentração de sólidos dissolvidos em uma solução, principalmente em soluções de açúcar. A medida é utilizada na indústria de alimentos e bebidas.", 
+    image: "" 
+  },
+  { 
+    term: "Calcinação", 
+    category: "Química", 
+    definition: "A calcinação é a etapa final da obtenção de alumina e envolve a transformação do hidrato em uma mistura cristalina de formas alotrópicas de Al2O3. A reação de calcinação é representada pela equação: 2 Al2O3·3 H2O (s) → Al2O3 (s) + 3 H2O.", 
+    image: "" 
+  },
+  { 
+    term: "Catalisador", 
+    category: "Química", 
+    definition: "O catalisador é uma substância que aumenta a taxa de uma reação química sem ser consumida no processo. Ele atua diminuindo a energia de ativação, criando caminhos alternativos para a reação ocorrer.", 
+    image: "" 
+  },
+  { 
+    term: "Cetona", 
+    category: "Funções Orgânicas", 
+    definition: "As cetonas são compostos orgânicos que apresentam o grupo carbonila no meio da cadeia carbônica, ligado a dois grupos orgânicos. A fórmula geral das cetonas é R1–CO–R2, onde R1 e R2 podem ser diferentes ou idênticos, como no caso da acetona.", 
+    image: "src/dicionario/cetona.webp" 
+  },
+  { 
+    term: "Clorofórmio", 
+    category: "Química", 
+    definition: "O clorofórmio é um solvente orgânico com o nome IUPAC de triclorometano (CHCl3). Ele é utilizado em laboratórios e na indústria química, além de ser conhecido por sua solubilidade em substâncias apolares, como os alcanos.", 
+    image: "" 
+  },
+  { 
+    term: "Combustíveis", 
+    category: "Química", 
+    definition: "Combustíveis são substâncias que liberam energia na forma de calor ou luz quando reagem com o oxigênio, geralmente através da combustão. Exemplos incluem petróleo, carvão, gás natural e biocombustíveis.", 
+    image: "" 
+  },
+  { 
+    term: "Componente", 
+    category: "Química", 
+    definition: "", 
+    image: "" 
+  },
+  { 
+    term: "Composto", 
+    category: "Química", 
+    definition: "Um composto é uma substância formada pela combinação química de dois ou mais elementos diferentes em proporções fixas. Os compostos podem ser orgânicos ou inorgânicos, e suas propriedades dependem da composição e estrutura molecular.", 
+    image: "" 
+  },
+  { 
+    term: "Comprimento", 
+    category: "Química", 
+    definition: "Comprimento é uma medida de extensão de um objeto ou distância entre dois pontos no espaço. Em física, é uma das grandezas fundamentais, sendo medida em unidades como metros (m) ou quilômetros (km).", 
+    image: "" 
+  },
+  {
+    term: "Areômetro",
+    category: "Física",
+    definition: "Instrumento utilizado para medir a densidade de líquidos.",
+    image: ""
+  },
+  {
+    term: "Átomo",
+    category: "Química",
+    definition: "Rutherford idealizou um modelo para o átomo, análogo ao modelo do sistema planetário. Nele, o átomo é constituído por duas regiões diferentes: núcleo e eletrosfera. No núcleo estariam concentradas praticamente toda a massa e a carga positiva do átomo.",
+    image: ""
+  },
+  {
+    term: "Átomo-grama",
+    category: "Química",
+    definition: "Unidade que representa a quantidade de átomos em um mol de uma substância.",
+    image: ""
+  },
+  {
+    term: "Autoionização",
+    category: "Química",
+    definition: "Processo no qual uma molécula de uma substância reage consigo mesma para formar íons.",
+    image: ""
+  },
+  {
+    term: "Bário",
+    category: "Química",
+    definition: "Elemento químico de símbolo Ba, número atômico 56, usado em radiografias e fogos de artifício.",
+    image: ""
+  },
+  {
+    term: "Béquer",
+    category: "Química",
+    definition: "Recipiente cilíndrico de vidro usado em laboratórios para misturar e aquecer substâncias.",
+    image: ""
+  },
+  {
+    term: "Bicarbonatos",
+    category: "Química",
+    definition: "A presença de íons bicarbonato (HCO3⁻) está relacionada à interação do gás carbônico com a água.",
+    image: ""
+  },
+  {
+    term: "Bromato",
+    category: "Química",
+    definition: "Composto químico que contém o íon bromato (BrO3⁻).",
+    image: ""
+  },
+  {
+    term: "Brometo",
+    category: "Química",
+    definition: "Composto químico que contém o íon brometo (Br⁻).",
+    image: ""
+  },
+  {
+    term: "Bureta",
+    category: "Química",
+    definition: "Equipamento usado em titulações para medir o volume de líquidos com precisão.",
+    image: ""
+  },
+  {
+    term: "Butanamida",
+    category: "Química",
+    definition: "Composto orgânico que pertence à classe das amidas derivadas do ácido butanoico.",
+    image: ""
+  },
+  {
+    term: "Cadeia",
+    category: "Química",
+    definition: "Sequência de átomos de carbono conectados em moléculas orgânicas.",
+    image: ""
+  },
+  {
+    term: "Cadinhos",
+    category: "Química",
+    definition: "Recipientes resistentes ao calor usados para aquecer substâncias a altas temperaturas.",
+    image: ""
+  },
+  {
+    term: "Cálcio",
+    category: "Química",
+    definition: "Elemento químico de símbolo Ca, essencial para a formação de ossos e dentes.",
+    image: ""
+  },
+  {
+    term: "Carbonatos",
+    category: "Química",
+    definition: "Compostos químicos que contêm o íon carbonato (CO3²⁻).",
+    image: ""
+  },
+  {
+    term: "Carbonila",
+    category: "Química",
+    definition: "Grupo funcional (C=O) presente em aldeídos e cetonas.",
+    image: ""
+  },
+  {
+    term: "Carbono",
+    category: "Química",
+    definition: "Elemento químico de símbolo C, essencial para a vida e a base da química orgânica.",
+    image: ""
+  },
+  {
+    term: "Chumbo",
+    category: "Química",
+    definition: "Elemento químico de símbolo Pb, usado em baterias e conhecido por sua toxicidade.",
+    image: ""
+  },
+  {
+    term: "Esfregaço",
+    category: "Química",
+    definition: "Amostra de material biológico ou outro, coletada para análise microscópica.",
+    image: ""
+  },
+  {
+    term: "Espectrofotômetro",
+    category: "Física",
+    definition: "Instrumento utilizado para medir a intensidade da luz em diferentes comprimentos de onda.",
+    image: ""
+  },
+  {
+    term: "Éster",
+    category: "Química",
+    definition: "Composto orgânico formado pela reação de um ácido com um álcool, liberando água.",
+    image: ""
+  },
+  {
+    term: "Estrôncio",
+    category: "Química",
+    definition: "Elemento químico de símbolo Sr, usado em pirotecnia e fabricação de imãs.",
+    image: ""
+  },
+  {
+    term: "Estufa",
+    category: "Química",
+    definition: "Equipamento utilizado para aquecer substâncias em laboratórios.",
+    image: ""
+  },
+  {
+    term: "Etanol",
+    category: "Química",
+    definition: "Álcool etílico, composto usado como combustível e em bebidas alcoólicas.",
+    image: ""
+  },
+  {
+    term: "Éter",
+    category: "Química",
+    definition: "Composto orgânico caracterizado pelo grupo funcional -O-, formando uma ligação entre dois radicais.",
+    image: ""
+  },
+  {
+    term: "Éter-anidro",
+    category: "Química",
+    definition: "Éter sem a presença de água, utilizado como solvente em reações químicas.",
+    image: ""
+  },
+  {
+    term: "Etileno-glicol",
+    category: "Química",
+    definition: "Composto orgânico, também conhecido como 1,2-etanodiol, utilizado em anticongelantes e como solvente.",
+    image: ""
+  },
+  {
+    term: "Extração",
+    category: "Química",
+    definition: "Processo de separar substâncias de uma mistura utilizando um solvente.",
+    image: ""
+  },
+  {
+    term: "Fenóis",
+    category: "Fenóis",
+    definition: "Compostos orgânicos que possuem o grupo funcional -OH ligado a um anel benzênico.",
+    image: ""
+  },
+  {
+    term: "Fenolftaleína",
+    category: "Química",
+    definition: "Indicador ácido-base que muda de cor dependendo do pH da solução.",
+    image: ""
+  },
+  {
+    term: "Filtração",
+    category: "Química",
+    definition: "Processo de separação de sólidos e líquidos através de um filtro.",
+    image: ""
+  },
+  {
+    term: "Flotação",
+    category: "Química",
+    definition: "Processo de separação de substâncias sólidas em líquidos com base nas suas diferenças de densidade.",
+    image: ""
+  },
+  {
+    term: "Fluoreto",
+    category: "Química",
+    definition: "Composto formado pela combinação de flúor com outro elemento.",
+    image: ""
+  },
+  {
+    term: "Formila",
+    category: "Química",
+    definition: "Termo utilizado para se referir ao grupo funcional -CHO, típico de aldeídos.",
+    image: ""
+  },
+  {
+    term: "Fórmula",
+    category: "Química",
+    definition: "Representação simbólica que indica a composição de uma substância.",
+    image: ""
+  },
+  {
+    term: "Gás",
+    category: "Física",
+    definition: "Estado da matéria em que as partículas estão muito afastadas e se movem livremente.",
+    image: "gas.png"
+  },
+  {
+    term: "Heteroátomos",
+    category: "Química",
+    definition: "Átomos diferentes do carbono ou hidrogênio presentes em uma molécula orgânica, como oxigênio, nitrogênio, ou enxofre.",
+    image: "heteroatomos.png"
+  },
+  {
+    term: "Hidrocarbonetos",
+    category: "Química",
+    definition: "Compostos orgânicos formados por carbono e hidrogênio, como os alcanos, alcenos e alcinos.",
+    image: "hidrocarbonetos.png"
+  },
+  {
+    term: "Hidroxi-benzeno",
+    category: "Química",
+    definition: "Composto orgânico aromático, também conhecido como fenol, com um grupo hidroxila (-OH) ligado a um anel benzênico.",
+    image: "hidroxi-benzeno.png"
+  },
+  {
+    term: "Hidróxidos",
+    category: "Química",
+    definition: "Compostos que contêm o íon hidróxido (OH-) ligado a um metal.",
+    image: "hidroxidos.png"
+  },
+  {
+    term: "Hidroxila",
+    category: "Química",
+    definition: "Grupo funcional composto por um átomo de oxigênio ligado a um átomo de hidrogênio (-OH), encontrado em álcoois e fenóis.",
+    image: "hidroxila.png"
+  },
+  {
+    term: "Homogeneização",
+    category: "Química",
+    definition: "Processo de tornar uma substância ou mistura uniforme em sua composição.",
+    image: "homogeneizacao.png"
+  },
+  {
+    term: "Indicador-tampão",
+    category: "Química",
+    definition: "Solução que resiste a mudanças no pH quando pequenas quantidades de ácido ou base são adicionadas.",
+    image: "indicador-tampao.png"
+  },
+  {
+    term: "Inflamabilidade",
+    category: "Química",
+    definition: "Propriedade de uma substância de se incendiar ou pegar fogo facilmente.",
+    image: "inflamabilidade.png"
+  },
+  {
+    term: "Inibição",
+    category: "Química",
+    definition: "Processo que diminui a velocidade de uma reação química ou previne sua ocorrência.",
+    image: "inibicao.png"
+  },
+  {
+    term: "Iodeto",
+    category: "Química",
+    definition: "Composto formado pela combinação de iodo com outro elemento, geralmente um metal.",
+    image: "iodeto.png"
+  },
+  {
+    term: "Iodimetria",
+    category: "Química",
+    definition: "Método de titulação que usa soluções de iodo para determinar a concentração de substâncias, como antioxidantes.",
+    image: "iodimetria.png"
+  },
+  {
+    term: "Íon",
+    category: "Química",
+    definition: "Átomo ou molécula que possui carga elétrica devido à perda ou ganho de elétrons.",
+    image: "ion.png"
+  },
+  {
+    term: "Ionização",
+    category: "Química",
+    definition: "Processo de formação de íons a partir da dissociação de uma substância em solução ou pela aplicação de energia.",
+    image: "ionizacao.png"
+  },
+  {
+    term: "Isomeria",
+    category: "Química",
+    definition: "Fenômeno em que compostos diferentes têm a mesma fórmula molecular, mas estruturas ou propriedades distintas.",
+    image: "isomeria.png"
+  },
+  {
+    term: "Isômeros",
+    category: "Química",
+    definition: "Substâncias com a mesma fórmula molecular, mas estruturas ou arranjos atômicos diferentes.",
+    image: "isomeros.png"
+  },
+  {
+    term: "Isopropílico",
+    category: "Química",
+    definition: "Álcool, também conhecido como propanol, utilizado como solvente e desinfetante.",
+    image: "isopropilico.png"
+  },
+  {
+    term: "Lavagem",
+    category: "Química",
+    definition: "Processo de purificação de substâncias, geralmente com o uso de solventes para remover impurezas.",
+    image: "lavagem.png"
+  },
+  {
+    term: "Legibilidade",
+    category: "Química",
+    definition: "Qualidade de ser legível, ou seja, de ser facilmente lido ou compreendido.",
+    image: "legibilidade.png"
+  },
+  {
+    term: "Ligação",
+    category: "Química",
+    definition: "Força que mantém os átomos unidos em uma molécula, podendo ser covalente, iônica ou metálica.",
+    image: "ligacao.png"
+  },
+  {
+    term: "Liquefação",
+    category: "Física",
+    definition: "Processo no qual uma substância passa do estado gasoso para o estado líquido devido à redução de temperatura ou aumento de pressão.",
+    image: "liquefacao.png"
+  },
+  {
+    term: "Líquido",
+    category: "Física",
+    definition: "Estado da matéria onde as partículas estão mais próximas do que no estado gasoso, mas ainda possuem mobilidade.",
+    image: "liquido.png"
+  },
+  {
+    term: "Magnésio",
+    category: "Química",
+    definition: "Elemento químico de símbolo Mg, metal alcalino-terroso, utilizado em ligas e como suplemento dietético.",
+    image: "magnesio.png"
+  },
+  {
+    term: "Massa",
+    category: "Física",
+    definition: "Quantidade de matéria presente em um objeto, medida em quilogramas (kg) no Sistema Internacional.",
+    image: "massa.png"
+  },
+  {
+    term: "Metilorange",
+    category: "Química",
+    definition: "Indicador ácido-base que muda de vermelho para amarelo em soluções de pH entre 3,1 e 4,4.",
+    image: "metilorange.png"
+  },
+  {
+    term: "Mistura",
+    category: "Química",
+    definition: "Combinacão de duas ou mais substâncias onde cada uma mantém suas propriedades individuais.",
+    image: "mistura.png"
+  },
+  {
+    term: "Mol",
+    category: "Química",
+    definition: "Unidade usada para medir a quantidade de substância, correspondente a 6,022 × 10²³ entidades elementares.",
+    image: "mol.png"
+  },
+  {
+    term: "Molaridade",
+    category: "Química",
+    definition: "Medida de concentração de uma solução, definida como o número de mols de soluto por litro de solução.",
+    image: "molaridade.png"
+  },
+  {
+    term: "Molécula",
+    category: "Química",
+    definition: "Conjunto de dois ou mais átomos ligados entre si que formam a menor unidade de uma substância química.",
+    image: "molecula.png"
+  },
+  {
+    term: "Mufla",
+    category: "Química",
+    definition: "Forno de alta temperatura usado em laboratórios para calcinação ou fusão de materiais.",
+    image: "mufla.png"
+  },
+  {
+    term: "Neutralização",
+    category: "Química",
+    definition: "Reação química entre um ácido e uma base que resulta na formação de sal e água.",
+    image: "neutralizacao.png"
+  },
+  {
+    term: "Nêutrons",
+    category: "Física",
+    definition: "Partículas subatômicas neutras presentes no núcleo do átomo.",
+    image: "neutrons.png"
+  },
+  {
+    term: "Nitrilo",
+    category: "Química",
+    definition: "Composto orgânico que possui o grupo funcional -C≡N, caracterizado por uma ligação tripla entre carbono e nitrogênio.",
+    image: "nitrilo.png"
+  },
+  {
+    term: "Oxalatos",
+    category: "Química",
+    definition: "Sais ou ésteres do ácido oxálico, frequentemente encontrados em vegetais como espinafre.",
+    image: "oxalatos.png"
+  },
+  {
+    term: "Oxidação",
+    category: "Química",
+    definition: "Processo químico em que um átomo ou íon perde elétrons, aumentando seu estado de oxidação.",
+    image: "oxidacao.png"
+  },
+  {
+    term: "Pesafiltro",
+    category: "Química",
+    definition: "Equipamento usado para pesar amostras durante processos de filtração.",
+    image: "pesafiltro.png"
+  },
+  {
+    term: "Pipeta",
+    category: "Química",
+    definition: "Instrumento usado para medir e transferir pequenos volumes de líquido com alta precisão.",
+    image: "pipeta.png"
+  },
+  {
+    term: "Polarimetria",
+    category: "Química",
+    definition: "Técnica usada para medir o ângulo de rotação da luz polarizada por uma substância ópticamente ativa.",
+    image: "polarimetria.png"
+  },
+  {
+    term: "Potássio",
+    category: "Química",
+    definition: "Elemento químico de símbolo K, metal alcalino essencial para funções biológicas e processos químicos.",
+    image: "potassio.png"
+  },
+  {
+    term: "Precipitação",
+    category: "Química",
+    definition: "Processo em que um sólido se forma em uma solução devido a uma reação química ou mudanças em condições físicas.",
+    image: "precipitacao.png"
+  },
+  {
+    term: "Precipitado",
+    category: "Química",
+    definition: "Sólido que se forma e se separa de uma solução durante uma reação química.",
+    image: "precipitado.png"
+  },
+  {
+    term: "Pressão",
+    category: "Física",
+    definition: "Força exercida por unidade de área, medida em pascal (Pa) no Sistema Internacional.",
+    image: "pressao.png"
+  },
+  {
+    term: "Propanona",
+    category: "Química",
+    definition: "Composto químico conhecido como acetona, utilizado como solvente e em processos industriais.",
+    image: "propanona.png"
+  },
+  {
+    term: "Prótons",
+    category: "Física",
+    definition: "Partículas subatômicas com carga positiva presentes no núcleo do átomo.",
+    image: "protons.png"
+  },
+  {
+    term: "Pureza",
+    category: "Química",
+    definition: "Medida da quantidade de substância desejada em uma amostra, sem impurezas ou contaminantes.",
+    image: "pureza.png"
+  },
+  {
+    term: "Purificação",
+    category: "Química",
+    definition: "Processo de remoção de impurezas de uma substância para aumentar sua pureza.",
+    image: "purificacao.png"
+  },
+  {
+    term: "Reação",
+    category: "Química",
+    definition: "Processo químico em que substâncias iniciais (reagentes) são transformadas em novas substâncias (produtos).",
+    image: "reacao.png"
+  },
+  {
+    term: "Reagentes",
+    category: "Química",
+    definition: "Substâncias que participam de uma reação química, sendo consumidas no processo.",
+    image: "reagentes.png"
+  },
+  {
+    term: "Recristalização",
+    category: "Química",
+    definition: "Técnica de purificação de compostos sólidos por dissolução em solvente e posterior formação de cristais.",
+    image: "recristalizacao.png"
+  },
+  {
+    term: "Redução",
+    category: "Química",
+    definition: "Reação química em que um átomo ou íon ganha elétrons, diminuindo seu estado de oxidação.",
+    image: "reducao.png"
+  },
+  {
+    term: "Refração",
+    category: "Física",
+    definition: "Mudança na direção de propagação de uma onda ao passar de um meio para outro com densidades diferentes.",
+    image: "refracao.png"
+  },
+  {
+    term: "Refratometria",
+    category: "Química",
+    definition: "Método de análise que mede o índice de refração de uma substância para determinar sua composição ou pureza.",
+    image: "refratometria.png"
+  },
+  {
+    term: "Refratômetro",
+    category: "Química",
+    definition: "Instrumento utilizado para medir o índice de refração de líquidos ou sólidos transparentes.",
+    image: "refratometro.png"
+  },
+  {
+    term: "Retículos",
+    category: "Física",
+    definition: "Estruturas em forma de rede, frequentemente relacionadas à organização cristalina de sólidos.",
+    image: "reticulos.png"
+  },
+  {
+    term: "Reversibilidade",
+    category: "Química",
+    definition: "Propriedade de uma reação química que pode ocorrer nos dois sentidos, formando reagentes e produtos alternadamente.",
+    image: "reversibilidade.png"
+  },
+  {
+    term: "Sacarímetros",
+    category: "Química",
+    definition: "Instrumentos usados para medir a concentração de açúcar em soluções.",
+    image: "sacarimetros.png"
+  },
+  {
+    term: "Sacarose",
+    category: "Química",
+    definition: "Dissacarídeo composto por glicose e frutose, amplamente utilizado como adoçante.",
+    image: "sacarose.png"
+  },
+  {
+    term: "Sódio",
+    category: "Química",
+    definition: "Elemento químico de símbolo Na, metal alcalino altamente reativo e essencial para funções biológicas.",
+    image: "sodio.png"
+  },
+  {
+    term: "Sólido",
+    category: "Física",
+    definition: "Estado da matéria caracterizado por forma e volume definidos, com partículas fortemente ligadas.",
+    image: "solido.png"
+  },
+  {
+    term: "Solubilidade",
+    category: "Química",
+    definition: "Propriedade que define a quantidade máxima de uma substância que pode se dissolver em um solvente a uma determinada temperatura.",
+    image: "solubilidade.png"
+  },
+  {
+    term: "Solução",
+    category: "Química",
+    definition: "Mistura homogênea composta por soluto e solvente, com propriedades uniformes.",
+    image: "solucao.png"
+  },
+  {
+    term: "Solutos",
+    category: "Química",
+    definition: "Substâncias dissolvidas em um solvente para formar uma solução.",
+    image: "solutos.png"
+  },
+  {
+    term: "Solvente",
+    category: "Química",
+    definition: "Substância capaz de dissolver outras substâncias (solutos) para formar uma solução.",
+    image: "solvente.png"
+  },
+  {
+    term: "Sublimação",
+    category: "Física",
+    definition: "Mudança de estado físico em que uma substância passa diretamente do sólido para o gás, sem passar pelo líquido.",
+    image: "sublimacao.png"
+  },
+  {
+    term: "Substâncias",
+    category: "Química",
+    definition: "Materiais com composição química definida, podendo ser elementos ou compostos.",
+    image: "substancias.png"
+  },
+  {
+    term: "Surfatantes",
+    category: "Química",
+    definition: "Compostos com parte hidrofílica e parte lipofílica usados para reduzir a tensão superficial entre líquidos.",
+    image: "surfatantes.png"
+  },
+  {
+    term: "Suspensão",
+    category: "Química",
+    definition: "Mistura heterogênea em que partículas sólidas estão dispersas em um líquido sem se dissolver.",
+    image: "suspensao.png"
+  },
+  {
+    term: "Temperatura",
+    category: "Física",
+    definition: "Grandeza física que mede o grau de agitação térmica das partículas de um corpo.",
+    image: "temperatura.png"
+  },
+  {
+    term: "Teor",
+    category: "Química",
+    definition: "Quantidade relativa de uma substância presente em uma mistura ou composto.",
+    image: "teor.png"
+  },
+  {
+    term: "Termoquímica",
+    category: "Química",
+    definition: "Ramo da química que estuda as trocas de energia, na forma de calor, durante as reações químicas.",
+    image: "termoquimica.png"
+  },
+  {
+    term: "Tioálcoois",
+    category: "Química",
+    definition: "Compostos orgânicos que possuem grupos tiol (-SH) ligados a uma cadeia de carbono.",
+    image: "tioalcoois.png"
+  },
+  {
+    term: "Titulação",
+    category: "Química",
+    definition: "Método analítico que determina o volume de solução padrão necessário para reagir com a solução problema.",
+    image: "titulacao.png"
+  },
+  {
+    term: "Titulante",
+    category: "Química",
+    definition: "Solução padrão utilizada na titulação para reagir com a substância a ser analisada.",
+    image: "titulante.png"
+  },
+  {
+    term: "Titulometria",
+    category: "Química",
+    definition: "Técnica de análise química baseada na titulação para determinação da concentração de uma substância.",
+    image: "titulometria.png"
+  },
+  {
+    term: "Tolueno",
+    category: "Química",
+    definition: "Hidrocarboneto aromático com fórmula C7H8, utilizado como solvente e matéria-prima na indústria química.",
+    image: "tolueno.png"
+  },
+  {
+    term: "Tornassol",
+    category: "Química",
+    definition: "Indicador de pH natural que muda de cor em função da acidez ou alcalinidade de uma solução.",
+    image: "tornassol.png"
+  },
+  {
+    term: "Triálcool",
+    category: "Química",
+    definition: "Álcool que possui três grupos hidroxila (-OH) em sua estrutura molecular.",
+    image: "trialcool.png"
+  },
+  {
+    term: "Trimetilcarbinol",
+    category: "Química",
+    definition: "Nome comum do composto 2-metil-2-propanol, um álcool terciário.",
+    image: "trimetilcarbinol.png"
+  },
+  {
+    term: "Trinitração",
+    category: "Química",
+    definition: "Processo químico de adição de três grupos nitro (-NO2) a uma molécula, frequentemente usado na síntese de explosivos.",
+    image: "trinitracao.png"
+  },
+  {
+    term: "Troálcool",
+    category: "Química",
+    definition: "Álcool com propriedades específicas que o distinguem de outros tipos de álcoois.",
+    image: "troalcool.png"
+  },
+  {
+    term: "Tungstênio",
+    category: "Química",
+    definition: "Elemento químico de símbolo W, conhecido por sua alta densidade e resistência a altas temperaturas.",
+    image: "tungstenio.png"
+  },
+  {
+    term: "Turbidimetria",
+    category: "Química",
+    definition: "Método de quantificação baseado na medição da turbidez de uma solução, geralmente utilizando espectrofotômetro.",
+    image: "turbidimetria.png"
+  },
+  {
+    term: "Turvação",
+    category: "Química",
+    definition: "Aumento da opacidade de uma solução devido à presença de partículas suspensas.",
+    image: "turvacao.png"
+  },
+  {
+    term: "Ultracongelamento",
+    category: "Química",
+    definition: "Processo de congelamento rápido a temperaturas extremamente baixas para preservar substâncias ou amostras.",
+    image: "ultracongelamento.png"
+  },
+  {
+    term: "Uréia",
+    category: "Química",
+    definition: "Composto orgânico de fórmula CO(NH2)2, amplamente utilizado como fertilizante e em indústrias químicas.",
+    image: "ureia.png"
+  },
+  {
+    term: "Vanádio",
+    category: "Química",
+    definition: "Elemento químico de símbolo V, conhecido por sua resistência à corrosão e usado em ligas metálicas.",
+    image: "vanadio.png"
+  },
+  {
+    term: "Variabilidade",
+    category: "Química",
+    definition: "Capacidade de um sistema ou processo de apresentar variações em suas propriedades ou resultados.",
+    image: "variabilidade.png"
+  },
+  {
+    term: "Vazamento",
+    category: "Química",
+    definition: "Escape indesejado de substâncias, frequentemente associado a problemas em recipientes ou tubulações.",
+    image: "vazamento.png"
+  },
+  {
+    term: "Vedação",
+    category: "Química",
+    definition: "Processo ou material utilizado para impedir vazamentos em recipientes ou conexões.",
+    image: "vedacao.png"
+  },
+  {
+    term: "Viragem",
+    category: "Química",
+    definition: "Mudança de cor observada durante uma reação química, frequentemente associada a indicadores de pH.",
+    image: "viragem.png"
+  },
+  {
+    term: "Volatilização",
+    category: "Química",
+    definition: "Transformação de uma substância do estado líquido ou sólido para o estado gasoso.",
+    image: "volatizacao.png"
+  },
+  {
+    term: "Volume",
+    category: "Física",
+    definition: "Medida do espaço tridimensional ocupado por um corpo ou substância.",
+    image: "volume.png"
+  },
+  {
+    term: "Xenônio",
+    category: "Química",
+    definition: "Elemento químico de símbolo Xe, gás nobre utilizado em lâmpadas e aplicações científicas.",
+    image: "xenonio.png"
+  },
+  {
+    term: "Acetato de sódio",
+    category: "Química",
+    definition: "Sal formado pela reação do ácido acético com o hidróxido de sódio, usado em soluções tamponantes.",
+    image: "acetato-de-sodio.png"
+  },
+  {
+    term: "Ácido carboxílico",
+    category: "Química",
+    definition: "Composto orgânico que contém um grupo funcional carboxila (-COOH).",
+    image: "acido-carboxilico.png"
+  },
+  {
+    term: "Ácido fraco",
+    category: "Química",
+    definition: "Ácido que se ioniza parcialmente em solução aquosa.",
+    image: "acido-fraco.png"
+  },
+  {
+    term: "Agente clarificante",
+    category: "Química",
+    definition: "Substância usada para remover impurezas e clarificar soluções.",
+    image: "agente-clarificante.png"
+  },
+  {
+    term: "Água destilada",
+    category: "Química",
+    definition: "Água purificada pelo processo de destilação, livre de impurezas e sais.",
+    image: "agua-destilada.png"
+  },
+  {
+    term: "Alaranjado de metila",
+    category: "Química",
+    definition: "Indicador de pH que muda de cor em diferentes faixas de acidez.",
+    image: "alaranjado-de-metila.png"
+  },
+  {
+    term: "Aldeído fórmico",
+    category: "Química",
+    definition: "Nome comum do formaldeído, um composto usado em resinas e como conservante.",
+    image: "aldeido-formico.png"
+  },
+  {
+    term: "Algodão hidrófilo",
+    category: "Química",
+    definition: "Algodão tratado para absorver água, amplamente usado em laboratórios.",
+    image: "algodao-hidrofilo.png"
+  },
+  {
+    term: "Amina primária",
+    category: "Química",
+    definition: "Composto orgânico contendo um grupo amino (-NH2) ligado a uma cadeia de carbono.",
+    image: "amina-primaria.png"
+  },
+  {
+    term: "Amina secundária",
+    category: "Química",
+    definition: "Composto orgânico com dois radicais alquila ou arila ligados ao nitrogênio.",
+    image: "amina-secundaria.png"
+  },
+  {
+    term: "Amina terciária",
+    category: "Química",
+    definition: "Composto orgânico com três radicais ligados ao átomo de nitrogênio.",
+    image: "amina-terciaria.png"
+  },
+  {
+    term: "Anel benzênico",
+    category: "Química",
+    definition: "Estrutura cíclica de seis átomos de carbono com ligações conjugadas.",
+    image: "anel-benzenico.png"
+  },
+  {
+    term: "Arranjos atômicos",
+    category: "Química",
+    definition: "Organização dos átomos em uma estrutura cristalina ou molecular.",
+    image: "arranjos-atomicos.png"
+  },
+  {
+    term: "Azul de metileno",
+    category: "Química",
+    definition: "Corante usado como indicador e em técnicas de coloração biológica.",
+    image: "azul-de-metileno.png"
+  },
+  {
+    term: "Balanço energético",
+    category: "Química",
+    definition: "Análise das energias envolvidas em um sistema ou reação química.",
+    image: "balanco-energetico.png"
+  },
+  {
+    term: "Balão volumétrico",
+    category: "Química",
+    definition: "Equipamento de vidro usado para preparar soluções com volumes precisos.",
+    image: "balao-volumetrico.png"
+  },
+  {
+    term: "Barriletes de PVC",
+    category: "Química",
+    definition: "Contêineres feitos de PVC, utilizados para armazenar líquidos ou substâncias químicas.",
+    image: "barriletes-de-pvc.png"
+  },
+  {
+    term: "Bastão de vidro",
+    category: "Química",
+    definition: "Instrumento usado para misturar soluções ou transferir líquidos em laboratório.",
+    image: "bastao-de-vidro.png"
+  },
+  {
+    term: "Bureta com mufa",
+    category: "Química",
+    definition: "Equipamento utilizado para medir volumes líquidos com alta precisão em titulações.",
+    image: "bureta-com-mufa.png"
+  },
+  {
+    term: "Carbonato de bário",
+    category: "Química",
+    definition: "Sólido cuja solubilidade aumenta em meio ácido, usado em reações químicas.",
+    image: "carbonato-de-bario.png"
+  },
+  {
+    term: "Cálculo estequiométrico",
+    category: "Química",
+    definition: "Determinação das proporções quantitativas entre reagentes e produtos em uma reação química.",
+    image: "calculo-estequiometrico.png"
+  },
+  {
+    term: "Cloreto de alumínio",
+    category: "Química",
+    definition: "Composto iônico utilizado em várias reações, principalmente como catalisador.",
+    image: "cloreto-de-aluminio.png"
+  },
+  {
+    term: "Cloreto de bário",
+    category: "Química",
+    definition: "Sal iônico utilizado em experimentos de laboratório e como reagente químico.",
+    image: "cloreto-de-bario.png"
+  },
+  {
+    term: "Cloreto de sódio",
+    category: "Química",
+    definition: "Composto iônico, também conhecido como sal de cozinha, amplamente utilizado em diversas indústrias.",
+    image: "cloreto-de-sodio.png"
+  },
+  {
+    term: "Coeficiente estequiométrico",
+    category: "Química",
+    definition: "Número que indica a proporção em que os reagentes e produtos de uma reação química participam.",
+    image: "coeficiente-estequimetrico.png"
+  },
+  {
+    term: "Colunas cromatográficas com placa porosa",
+    category: "Química",
+    definition: "Equipamento utilizado para separar misturas de compostos em função de suas propriedades físicas e químicas.",
+    image: "colunas-cromatograficas-com-placa-porosa.png"
+  },
+  {
+    term: "Compostos orgânicos nitrogenados",
+    category: "Química",
+    definition: "Compostos que contêm nitrogênio, como aminas, amidas e nitrocompostos, presentes em várias substâncias naturais e sintéticas.",
+    image: "compostos-organicos-nitrogenados.png"
+  },
+  {
+    term: "Compreensão da entalpia",
+    category: "Química",
+    definition: "Estudo da quantidade de energia contida em um sistema termodinâmico, especialmente em reações químicas.",
+    image: "compreensao-da-entalpia.png"
+  },
+  {
+    term: "Condutibilidade elétrica",
+    category: "Física",
+    definition: "Capacidade de uma substância de conduzir eletricidade, geralmente associada a soluções iônicas.",
+    image: "condutibilidade-eletrica.png"
+  },
+  {
+    term: "Constante de equilíbrio",
+    category: "Química",
+    definition: "Valor que expressa a relação entre as concentrações dos produtos e reagentes em um sistema em equilíbrio químico.",
+    image: "constante-de-equilibrio.png"
+  },
+  {
+    term: "Constante de equilíbrio de ácidos e bases",
+    category: "Química",
+    definition: "Valor que descreve o equilíbrio entre os ácidos e as bases em solução aquosa.",
+    image: "constante-de-equilibrio-de-acidos-e-bases.png"
+  },
+  {
+    term: "Crescimento/decrescimento de grandezas",
+    category: "Matemática",
+    definition: "Mudança em uma grandeza ao longo do tempo ou em resposta a outras variáveis.",
+    image: "crescimento-decrescimento-de-grandezas.png"
+  },
+  {
+    term: "Curva de solubilidade",
+    category: "Química",
+    definition: "Gráfico que mostra como a solubilidade de uma substância varia com a temperatura.",
+    image: "curva-de-solubilidade.png"
+  },
+  {
+    term: "Deslocamento do equilíbrio",
+    category: "Química",
+    definition: "Mudança nas concentrações dos produtos e reagentes em um sistema em equilíbrio devido a uma alteração nas condições do sistema.",
+    image: "deslocamento-do-equilibrio.png"
+  },
+  {
+    term: "Dessecadores de vidro",
+    category: "Laboratório",
+    definition: "Equipamentos usados para secar substâncias ou manter amostras secas ao remover a umidade.",
+    image: "dessecadores-de-vidro.png"
+  },
+  {
+    term: "Destilação seca",
+    category: "Química",
+    definition: "Processo de separação de compostos voláteis sem a presença de solventes ou água.",
+    image: "destilacao-seca.png"
+  },
+  {
+    term: "Destilação fracionada",
+    category: "Química",
+    definition: "Método de separação de líquidos com diferentes pontos de ebulição, utilizando uma coluna de destilação.",
+    image: "destilacao-fracionada.png"
+  },
+  {
+    term: "Digestor a frio",
+    category: "Química",
+    definition: "Equipamento utilizado para promover reações químicas em temperatura ambiente, sem aquecimento.",
+    image: "digestor-a-frio.png"
+  },
+  {
+    term: "Dissociação iônica",
+    category: "Química",
+    definition: "Processo em que um composto iônico se separa em seus íons constituintes quando dissolvido em um solvente.",
+    image: "dissociacao-ionica.png"
+  },
+  {
+    term: "Ebulição constante",
+    category: "Física",
+    definition: "Temperatura na qual a pressão de vapor de um líquido iguala-se à pressão atmosférica, permitindo a transição para o estado gasoso.",
+    image: "ebulicao-constante.png"
+  },
+  {
+    term: "Efeito do íon comum",
+    category: "Química",
+    definition: "Mudança na solubilidade de um sal quando um dos seus íons já está presente em solução.",
+    image: "efeito-do-ion-comum.png"
+  },
+  {
+    term: "Energia bioquímica",
+    category: "Biologia",
+    definition: "Energia utilizada por organismos vivos para realizar funções vitais, como crescimento e reprodução.",
+    image: "energia-bioquimica.png"
+  },
+  {
+    term: "Equação exponencial",
+    category: "Matemática",
+    definition: "Equação na qual a variável aparece no expoente, frequentemente utilizada para modelar crescimento ou decrescimento.",
+    image: "equacao-exponencial.png"
+  },
+  {
+    term: "Equilíbrio heterogêneo",
+    category: "Química",
+    definition: "Equilíbrio químico entre substâncias que estão em diferentes fases, como sólido e líquido.",
+    image: "equilibrio-heterogeneo.png"
+  },
+  {
+    term: "Equilíbrio homogêneo",
+    category: "Química",
+    definition: "Equilíbrio químico onde todos os reagentes e produtos estão na mesma fase.",
+    image: "equilibrio-homogeneo.png"
+  },
+  {
+    term: "Equilíbrio molecular",
+    category: "Química",
+    definition: "Equilíbrio em que as concentrações dos componentes moleculares em um sistema reacional permanecem constantes ao longo do tempo.",
+    image: "equilibrio-molecular.png"
+  },
+  {
+    term: "Equilíbrio químico",
+    category: "Química",
+    definition: "Estado de uma reação em que as taxas de reação direta e reversa são iguais, resultando em concentrações constantes dos reagentes e produtos.",
+    image: "equilibrio-quimico.png"
+  },
+  {
+    term: "Escala sacarimétrica",
+    category: "Química",
+    definition: "Escala usada para medir a concentração de sacarose em soluções, especialmente em análises de açúcar.",
+    image: "escala-sacarimetrica.png"
+  },
+  {
+    term: "Estado de agregação",
+    category: "Física",
+    definition: "Forma em que a matéria se apresenta, como sólido, líquido ou gasoso, dependendo da temperatura e pressão.",
+    image: "estado-de-agregacao.png"
+  },
+  {
+    term: "Fenômenos endotérmicos",
+    category: "Física",
+    definition: "Processos que absorvem calor do ambiente, resultando em uma diminuição de temperatura do sistema.",
+    image: "fenomenos-endotermicos.png"
+  },
+  {
+    term: "Fenômenos exotérmicos",
+    category: "Física",
+    definition: "Processos que liberam calor para o ambiente, resultando em um aumento de temperatura do sistema.",
+    image: "fenomenos-exotermicos.png"
+  },
+  {
+    term: "Filtrado límpido",
+    category: "Laboratório",
+    definition: "Solução ou líquido que foi filtrado, removendo partículas sólidas e apresentando aparência clara.",
+    image: "filtrado-limpido.png"
+  },
+  {
+    term: "Frascos âmbar",
+    category: "Laboratório",
+    definition: "Frascos de vidro com coloração âmbar, usados para proteger substâncias sensíveis à luz, como medicamentos e reagentes químicos.",
+    image: "frascos-ambar.png"
+  },
+  {
+    term: "Frascos conta-gotas",
+    category: "Laboratório",
+    definition: "Frascos com tampa com conta-gotas, usados para medir e administrar líquidos em pequenas quantidades.",
+    image: "frascos-conta-gotas.png"
+  },
+  {
+    term: "Funções orgânicas",
+    category: "Química",
+    definition: "Classes de compostos orgânicos com características químicas semelhantes, como álcoois, ácidos, ésteres, entre outros.",
+    image: "funcoes-organicas.png"
+  },
+  {
+    term: "Funções polinomiais",
+    category: "Matemática",
+    definition: "Funções matemáticas que envolvem polinômios, ou seja, expressões algébricas com termos em potências de uma variável.",
+    image: "funcoes-polinomiais.png"
+  },
+  {
+    term: "Funções polinomiais",
+    category: "Matemática",
+    definition: "Funções que podem ser expressas como soma de potências de uma variável multiplicadas por coeficientes constantes.",
+    image: "funcoes-polinomiais.png"
+  },
+  {
+    term: "Gás poluente",
+    category: "Biologia",
+    definition: "Gás que, quando liberado no ambiente, prejudica a qualidade do ar e pode causar danos à saúde humana ou ao meio ambiente.",
+    image: "gas-poluente.png"
+  },
+  {
+    term: "Hidrocarbonetos de cadeia aberta",
+    category: "Química",
+    definition: "Hidrocarbonetos compostos por cadeias lineares ou ramificadas de átomos de carbono, como alcano, alceno e alcino.",
+    image: "hidrocarbonetos-cadeia-aberta.png"
+  },
+  {
+    term: "Hidrocarbonetos de cadeia fechada",
+    category: "Química",
+    definition: "Hidrocarbonetos compostos por átomos de carbono dispostos em anéis, como os ciclanos e ciclenos.",
+    image: "hidrocarbonetos-cadeia-fechada.png"
+  },
+  {
+    term: "Hidróxido de magnésio",
+    category: "Química",
+    definition: "Composto iônico usado como antiácido e laxante, com a fórmula Mg(OH)₂.",
+    image: "hidroxido-de-magnesio.png"
+  },
+  {
+    term: "Hidróxido de sódio",
+    category: "Química",
+    definition: "Composto iônico, também conhecido como soda cáustica, usado como base forte e reagente em várias reações químicas.",
+    image: "hidroxido-de-sodio.png"
+  },
+  {
+    term: "Índice de refração",
+    category: "Física",
+    definition: "Valor que indica a capacidade de um material de desviar a luz quando ela passa de um meio para outro.",
+    image: "indice-de-reflexao.png"
+  },
+  {
+    term: "Iodeto de potássio",
+    category: "Química",
+    definition: "Composto iônico utilizado em análises laboratoriais e na fabricação de soluções para tratamentos médicos.",
+    image: "iodeto-de-potassio.png"
+  },
+  {
+    term: "Isômeros ópticos",
+    category: "Química",
+    definition: "Isômeros que se diferenciam pela forma como interagem com a luz polarizada, como enantiômeros e diastereoisômeros.",
+    image: "isomeros-opticos.png"
+  },
+  {
+    term: "Leis ponderais nas reações químicas",
+    category: "Química",
+    definition: "Leis que governam a relação entre as massas de reagentes e produtos em uma reação química, como a Lei de Lavoisier.",
+    image: "leis-ponderais-nas-reacoes-quimicas.png"
+  },
+  {
+    term: "Leitura sacarimétrica com cloreto de alumínio",
+    category: "Química",
+    definition: "Método de análise da concentração de sacarose em solução utilizando cloreto de alumínio como reagente.",
+    image: "leitura-sacarimetrica-com-cloreto-de-aluminio.png"
+  },
+  {
+    term: "Leitura sacarimétrica",
+    category: "Química",
+    definition: "Método de medição da concentração de sacarose em soluções usando um sacarímetro.",
+    image: "leitura-sacarimetrica.png"
+  },
+  {
+    term: "Licor de Fehling",
+    category: "Química",
+    definition: "Reagente utilizado para detectar aldeídos redutores, especialmente para a identificação de glicose.",
+    image: "licor-de-fehling.png"
+  },
+  {
+    term: "Ligação Covalente dativa (coordenada)",
+    category: "Química",
+    definition: "Tipo de ligação covalente onde ambos os elétrons compartilhados vêm de um único átomo.",
+    image: "ligacao-covalente-dativa.png"
+  },
+  {
+    term: "Ligações covalentes",
+    category: "Química",
+    definition: "Ligações químicas formadas pelo compartilhamento de pares de elétrons entre átomos.",
+    image: "ligacoes-covalentes.png"
+  },
+  {
+    term: "Ligações interatómicas",
+    category: "Química",
+    definition: "Forças que mantêm unidos os átomos dentro de uma molécula ou de um cristal, como as ligações covalentes e iônicas.",
+    image: "ligacoes-interatomicas.png"
+  },
+  {
+    term: "Ligações intermoleculares",
+    category: "Química",
+    definition: "Forças de atração entre moléculas diferentes, como as forças de van der Waals, pontes de hidrogênio e interações dipolo-dipolo.",
+    image: "ligacoes-intermoleculares.png"
+  },
+  {
+    term: "Ligações iônicas",
+    category: "Química",
+    definition: "Ligações químicas formadas pela atração eletrostática entre íons de cargas opostas, geralmente entre metais e não metais.",
+    image: "ligacoes-ionicas.png"
+  },
+  {
+    term: "Ligações metálicas",
+    category: "Química",
+    definition: "Ligações formadas por elétrons livres que se movem entre átomos metálicos, dando aos metais suas propriedades de condutividade e ductilidade.",
+    image: "ligacoes-metalicas.png"
+  },
+  {
+    term: "Ligações químicas",
+    category: "Química",
+    definition: "Forças que mantêm os átomos unidos em uma molécula ou composto, como ligações covalentes, iônicas e metálicas.",
+    image: "ligacoes-quimicas.png"
+  },
+  {
+    term: "Modelo atômico de Rutherford-Bohr",
+    category: "Física",
+    definition: "Modelo atômico que descreve o átomo como um núcleo denso e positivo, cercado por elétrons em órbitas circulares.",
+    image: "modelo-atomico-rutherford-bohr.png"
+  },
+  {
+    term: "Óptica macroscópica",
+    category: "Física",
+    definition: "Estudo dos fenômenos ópticos visíveis a olho nu, como reflexão, refração e dispersão, sem a necessidade de instrumentos microscópicos.",
+    image: "optica-macroscopica.png"
+  },
+  {
+    term: "Osmose reversa",
+    category: "Química",
+    definition: "Processo de purificação de água que usa pressão para forçar a água através de uma membrana semipermeável, removendo impurezas.",
+    image: "osmose-reversa.png"
+  },
+  {
+    term: "Pérolas de ebulição",
+    category: "Laboratório",
+    definition: "Pequenas esferas, geralmente feitas de vidro, que são colocadas em líquidos durante a aquecimento para garantir a ebulição uniforme.",
+    image: "perolas-de-ebulicao.png"
+  },
+  {
+    term: "Pinça para bureta com mufa giratória abertura",
+    category: "Laboratório",
+    definition: "Instrumento usado para segurar e ajustar a posição de uma bureta em experimentos de titulação, com uma mufa giratória para facilitar o manuseio.",
+    image: "pinca-bureta-com-mufa.png"
+  },
+  {
+    term: "Pinça para condensador",
+    category: "Laboratório",
+    definition: "Aparelho utilizado para segurar o condensador em experimentos de destilação, mantendo-o fixo e permitindo o fluxo adequado de vapor.",
+    image: "pinca-para-condensador.png"
+  },
+  {
+    term: "Pipeta volumétrica",
+    category: "Laboratório",
+    definition: "Instrumento de vidro utilizado para medir volumes precisos de líquidos, com uma única marca de calibração.",
+    image: "pipeta-volumetrica.png"
+  },
+  {
+    term: "Pipetas graduadas",
+    category: "Laboratório",
+    definition: "Pipetas com diversas marcas ao longo de seu comprimento, permitindo a medição de volumes variados de líquidos.",
+    image: "pipetas-graduadas.png"
+  },
+  {
+    term: "Pissetas polietileno bico curvo",
+    category: "Laboratório",
+    definition: "Frascos de plástico com bico curvado, usados para dispensar líquidos de maneira controlada em experimentos de laboratório.",
+    image: "pissetas-polietileno.png"
+  },
+  {
+    term: "Poder calorífico",
+    category: "Química",
+    definition: "Quantidade de calor liberado quando uma substância é completamente queimada, usado para medir a eficiência energética de combustíveis.",
+    image: "poder-calorifico.png"
+  },
+  {
+    term: "Processos Físico-Químicos",
+    category: "Química",
+    definition: "Processos que envolvem tanto mudanças físicas quanto químicas, como dissolução, evaporação e reações químicas.",
+    image: "processos-fisico-quimicos.png"
+  },
+  {
+    term: "Produto de solubilidade",
+    category: "Química",
+    definition: "Produto das concentrações molares de íons presentes em uma solução saturada de um composto, usado para descrever a solubilidade de substâncias.",
+    image: "produto-de-solubilidade.png"
+  },
+  {
+    term: "Proveta graduada",
+    category: "Laboratório",
+    definition: "Instrumento de vidro ou plástico com escalas graduadas, utilizado para medir volumes de líquidos de forma mais precisa que um cilindro medidor.",
+    image: "proveta-graduada.png"
+  },
+  {
+    term: "Reações exotérmicas",
+    category: "Química",
+    definition: "Reações químicas que liberam calor para o ambiente, como a combustão e a reação entre ácidos e bases.",
+    image: "reacoes-exotermicas.png"
+  },
+  {
+    term: "Reações endotérmicas",
+    category: "Química",
+    definition: "Reações químicas que absorvem calor do ambiente, como a fotossíntese e a dissolução de sais em água.",
+    image: "reacoes-endotermicas.png"
+  },
+  {
+    term: "Reagente auxiliar ou indicador",
+    category: "Química",
+    definition: "Substância usada em uma reação para indicar o fim de uma reação ou para facilitar a detecção de uma substância específica.",
+    image: "reagente-auxiliar.png"
+  },
+  {
+    term: "Reagente precipitante",
+    category: "Química",
+    definition: "Reagente utilizado para formar um precipitado em uma solução, geralmente para separar íons específicos de uma mistura.",
+    image: "reagente-precipitante.png"
+  },
+  {
+    term: "Reagentes inflamáveis",
+    category: "Química",
+    definition: "Substâncias que podem pegar fogo facilmente quando expostas a fontes de ignição, como chamas ou calor intenso.",
+    image: "reagentes-inflamaveis.png"
+  },
+  {
+    term: "Refração da luz",
+    category: "Física",
+    definition: "Mudança na direção de propagação de uma onda de luz ao passar de um meio para outro com densidade diferente.",
+    image: "refracao-da-luz.png"
+  },
+  {
+    term: "Relações estequiométricas",
+    category: "Química",
+    definition: "Relações matemáticas que descrevem as proporções entre as substâncias envolvidas em uma reação química, baseadas nas equações químicas balanceadas.",
+    image: "relacoes-estequimetricas.png"
+  },
+  {
+    term: "Sólidos iônicos",
+    category: "Química",
+    definition: "Sólidos formados por íons positivos e negativos unidos por ligações iônicas, que se organizam em estruturas cristalinas regulares.",
+    image: "solidos-ionicos.png"
+  },
+  {
+    term: "Solução de azul de metileno",
+    category: "Química",
+    definition: "Solução aquosa do composto azul de metileno, utilizada em diversas reações laboratoriais e como indicador redox.",
+    image: "solucao-azul-de-metileno.png"
+  },
+  {
+    term: "Solução de Fehling",
+    category: "Química",
+    definition: "Solução composta por dois reagentes usados para detectar aldeídos, especialmente a glicose, por meio de uma reação de redução.",
+    image: "solucao-de-fehling.png"
+  },
+  {
+    term: "Solução impura de sacarose",
+    category: "Química",
+    definition: "Solução que contém sacarose misturada com outras impurezas, não sendo 100% pura.",
+    image: "solucao-impura-de-sacarose.png"
+  },
+  {
+    term: "Solução indicadora de fenolftaleína",
+    category: "Química",
+    definition: "Solução usada em titulações ácido-base, que muda de incolor para rosa quando a solução se torna ligeiramente alcalina.",
+    image: "solucao-indicadora-fenolftaleina.png"
+  },
+  {
+    term: "Solução pura de sacarose",
+    category: "Química",
+    definition: "Solução composta exclusivamente por sacarose dissolvida em água, sem impurezas.",
+    image: "solucao-pura-de-sacarose.png"
+  },
+  {
+    term: "Soluções aquosas",
+    category: "Química",
+    definition: "Soluções em que a água é o solvente, muito comuns em reações químicas e processos biológicos.",
+    image: "solucoes-aquosas.png"
+  },
+  {
+    term: "Subacetato de chumbo",
+    category: "Química",
+    definition: "Composto de chumbo usado em processos químicos, especialmente na preparação de outros compostos de chumbo.",
+    image: "subacetato-de-chumbo.png"
+  },
+  {
+    term: "Subacetato de Chumbo",
+    category: "Química",
+    definition: "Outro nome para o subacetato de chumbo, um composto importante em algumas reações laboratoriais.",
+    image: "subacetato-de-chumbo.png"
+  },
+  {
+    term: "Substâncias opticamente ativas",
+    category: "Química",
+    definition: "Substâncias que podem rotacionar o plano da luz polarizada, como compostos quiralmente ativos.",
+    image: "substancias-opticamente-ativas.png"
+  },
+  {
+    term: "Tenaz de aço",
+    category: "Laboratório",
+    definition: "Ferramenta de laboratório utilizada para segurar e manusear objetos quentes ou frágeis, feita de aço para resistir a altas temperaturas.",
+    image: "tenaz-de-aco.png"
+  },
+  {
+    term: "Tensoativos aniônicos",
+    category: "Química",
+    definition: "Substâncias que possuem carga negativa e são usadas em detergentes e sabonetes para reduzir a tensão superficial da água.",
+    image: "tensoativos-anionicos.png"
+  },
+  {
+    term: "Teor de sacarose",
+    category: "Química",
+    definition: "Quantidade de sacarose presente em uma solução ou substância, frequentemente medida em porcentagem ou gramas por litro.",
+    image: "teor-de-sacarose.png"
+  },
+  {
+    term: "Transformação química",
+    category: "Química",
+    definition: "Mudança que resulta na formação de novas substâncias, como uma reação entre dois reagentes.",
+    image: "transformacao-quimica.png"
+  },
+  {
+    term: "Transformações ácido-base",
+    category: "Química",
+    definition: "Reações que envolvem a troca de prótons entre um ácido e uma base, alterando o pH da solução.",
+    image: "transformacoes-acido-base.png"
+  },
+  {
+    term: "Transformações endotérmicas",
+    category: "Química",
+    definition: "Reações que absorvem calor do ambiente, resultando em uma diminuição da temperatura no entorno.",
+    image: "transformacoes-endotermicas.png"
+  },
+  {
+    term: "Tubo de Polarização",
+    category: "Física",
+    definition: "Instrumento usado para estudar a polarização da luz, geralmente contendo um filtro polarizador e um material óptico.",
+    image: "tubo-de-polarizacao.png"
+  },
+  {
+    term: "Tubos de ensaio de vidro borossilicato",
+    category: "Laboratório",
+    definition: "Tubos de vidro altamente resistentes ao calor e produtos químicos, usados em experimentos laboratoriais.",
+    image: "tubos-de-ensaio-borossilicato.png"
+  },
+  {
+    term: "Vermelho de metila",
+    category: "Química",
+    definition: "Corante utilizado em titulações ácido-base como indicador, mudando de vermelho para amarelo dependendo do pH.",
+    image: "vermelho-de-metila.png"
+  },
+  {
+    term: "Violeta de metila",
+    category: "Química",
+    definition: "Corante utilizado como indicador em soluções ácidas ou básicas, com mudança de cor dependendo do pH.",
+    image: "violeta-de-metila.png"
+  },
+  {
+    term: "Pesagem por diferença",
+    category: "Química",
+    definition: "Método de pesagem onde a massa de uma substância é determinada pela diferença de massa antes e após a adição ou remoção de material.",
+    image: "pesagem-por-diferenca.png"
+  },
+  {
+    term: "Pesagem por adição",
+    category: "Química",
+    definition: "Método em que a substância é adicionada a uma balança e a variação de peso é registrada para calcular a massa desejada.",
+    image: "pesagem-por-adicao.png"
+  },
+  {
+    term: "Pesagem direta",
+    category: "Química",
+    definition: "Método simples de pesagem em que o material é colocado diretamente sobre a balança para determinar sua massa.",
+    image: "pesagem-direta.png"
+  },
+  {
+    term: "Pérolas de vidro",
+    category: "Laboratório",
+    definition: "Pequenas esferas de vidro usadas para controlar a intensidade de aquecimento em experimentos de aquecimento de líquidos.",
+    image: "perolas-de-vidro.png"
+  },
+  {
+    term: "Éter sulfúrico",
+    category: "Química",
+    definition: "Composto químico formado pela combinação de ácido sulfúrico com éter, usado como solvente e reagente em várias reações.",
+    image: "eter-sulfurico.png"
+  },
+  {
+    term: "Éter etílico",
+    category: "Química",
+    definition: "Composto orgânico utilizado como solvente em laboratório e como anestésico em procedimentos médicos.",
+    image: "eter-etilico.png"
+  },
+  {
+    term: "Tiossulfato de sódio",
+    category: "Química",
+    definition: "Composto utilizado em processos de fixação fotográfica, bem como em reações de redução e como agente redutor.",
+    image: "tiossulfato-de-sodio.png"
+  },
+  {
+    term: "Escala de Baumé",
+    category: "Química",
+    definition: "Escala usada para medir a densidade de líquidos em relação à água, comumente usada na indústria química.",
+    image: "escala-de-baume.png"
+  },
+  {
+    term: "Fenol puro",
+    category: "Química",
+    definition: "Composto orgânico aromático, utilizado como intermediário em síntese de plásticos, resinas e produtos farmacêuticos.",
+    image: "fenol-puro.png"
+  },
+  {
+    term: "Fenóis de tolueno",
+    category: "Química",
+    definition: "Compostos derivados do tolueno com grupos fenol, utilizados em reações de síntese e produção de plásticos.",
+    image: "fenois-de-tolueno.png"
+  },
+  {
+    term: "Fenol Aromático",
+    category: "Química",
+    definition: "Fenol com anel aromático na sua estrutura, utilizado em diversas indústrias, incluindo a produção de resinas e medicamentos.",
+    image: "fenol-aromatico.png"
+  },
+  {
+    term: "Bico de Bunsen",
+    category: "Laboratório",
+    definition: "Instrumento usado para gerar uma chama controlada, comumente utilizado em experimentos de aquecimento e esterilização.",
+    image: "bico-de-bunsen.png"
+  },
+  {
+    term: "Balança analítica",
+    category: "Laboratório",
+    definition: "Equipamento de alta precisão usado para medir pequenas massas de substâncias com grande exatidão.",
+    image: "balanca-analitica.png"
+  },
+  {
+    term: "Cadinho de porcelana",
+    category: "Laboratório",
+    definition: "Recipiente de porcelana utilizado em processos de aquecimento e fusão de substâncias em laboratório.",
+    image: "cadinho-de-porcelana.png"
+  },
+  {
+    term: "Permanganato de potássio",
+    category: "Química",
+    definition: "Composto químico de potássio usado como agente oxidante forte em várias reações de oxidação.",
+    image: "permanganato-de-potassio.png"
+  },
+  {
+    term: "Íon amônio",
+    category: "Química",
+    definition: "Íon formado pela adição de um próton ao amônio (NH₃), com carga positiva, importante em muitas reações químicas.",
+    image: "ion-amonio.png"
+  },
+  {
+    term: "Cloreto de amônio",
+    category: "Química",
+    definition: "Composto iônico formado pela reação do ácido clorídrico com amônia, usado em fertilizantes e processos industriais.",
+    image: "cloreto-de-amonio.png"
+  },
+  {
+    term: "Sulfato de amônio",
+    category: "Química",
+    definition: "Sal de amônio utilizado principalmente como fertilizante, também usado em processos industriais de síntese.",
+    image: "sulfato-de-amonio.png"
+  },
+  {
+    term: "Sais de amônio",
+    category: "Química",
+    definition: "Compostos formados pela combinação de amônia com ácidos, usados em uma variedade de aplicações, incluindo fertilizantes.",
+    image: "sais-de-amonio.png"
+  },
+  {
+    term: "Carbonato de sódio anidro",
+    category: "Química",
+    definition: "Composto químico utilizado em diversas reações industriais, especialmente como agente de neutralização e na fabricação de vidro.",
+    image: "carbonato-de-sodio-anidro.png"
+  },
+  {
+    term: "Carbonato de cálcio",
+    category: "Química",
+    definition: "Composto abundante na natureza, encontrado em rochas como calcário e mármore, utilizado na produção de cimento, vidro e como suplemento alimentar.",
+    image: "carbonato-de-calcio.png"
+  },
+  {
+    term: "Análise gravimétrica",
+    category: "Laboratório",
+    definition: "Método de análise quantitativa em que a substância de interesse é separada e pesada para determinar sua quantidade.",
+    image: "analise-gravimetrica.png"
+  },
+  {
+    term: "Balança de precisão",
+    category: "Laboratório",
+    definition: "Equipamento de alta precisão utilizado para medir pequenas quantidades de substâncias com exatidão.",
+    image: "balanca-de-precisao.png"
+  },
+  {
+    term: "Tensoativos anfóteros",
+    category: "Química",
+    definition: "Tensoativos que possuem tanto uma carga negativa quanto uma carga positiva em sua estrutura, sendo úteis em produtos de limpeza e cosméticos.",
+    image: "tensoativos-amfoteros.png"
+  },
+  {
+    term: "Tensoativos sintéticos",
+    category: "Química",
+    definition: "Tensoativos produzidos artificialmente, amplamente usados em detergentes e cosméticos devido às suas propriedades de redução de tensão superficial.",
+    image: "tensoativos-sinteticos.png"
+  },
+  {
+    term: "Tensoativos não-iônicos",
+    category: "Química",
+    definition: "Tensoativos que não possuem carga elétrica, sendo usados em produtos cosméticos, shampoos e detergentes.",
+    image: "tensoativos-nao-ionicos.png"
+  },
+  {
+    term: "Átomos de cadeia",
+    category: "Química",
+    definition: "Átomos dispostos em uma estrutura linear, formando cadeias, como em hidrocarbonetos e polímeros.",
+    image: "atomos-de-cadeia.png"
+  },
+  {
+    term: "Ácido acético",
+    category: "Química",
+    definition: "Composto orgânico com fórmula CH₃COOH, utilizado como solvente e em processos industriais, além de ser o principal componente do vinagre.",
+    image: "acido-acetico.png"
+  },
+  {
+    term: "Ácido sulfúrico",
+    category: "Química",
+    definition: "Ácido forte utilizado em diversas reações industriais, especialmente na produção de fertilizantes e na refinaria de petróleo.",
+    image: "acido-sulfurico.png"
+  },
+  {
+    term: "Ácido fluorídrico",
+    category: "Química",
+    definition: "Ácido altamente corrosivo e tóxico, utilizado na fabricação de compostos de flúor e na indústria de vidro.",
+    image: "acido-fluoridrico.png"
+  },
+  {
+    term: "Ácido muriático",
+    category: "Química",
+    definition: "Nome popular do ácido clorídrico, utilizado em limpeza e em processos industriais de extração e refino de metais.",
+    image: "acido-muriatico.png"
+  },
+  {
+    term: "Ácido concentrado",
+    category: "Química",
+    definition: "Forma de ácido com alta concentração, utilizado em processos industriais e experimentos químicos que requerem grandes quantidades de ácido.",
+    image: "acido-concentrado.png"
+  },
+  {
+    term: "Ácido nítrico",
+    category: "Química",
+    definition: "Ácido forte utilizado em processos de fabricação de fertilizantes, explosivos e na indústria metalúrgica.",
+    image: "acido-nitrico.png"
+  },
+  {
+    term: "Destilação simples",
+    category: "Laboratório",
+    definition: "Método de separação de misturas baseado na diferença de pontos de ebulição dos componentes, utilizado para purificar líquidos.",
+    image: "destilacao-simples.png"
+  },
+  {
+    term: "Solução tampão",
+    category: "Química",
+    definition: "Solução que mantém o pH constante mesmo com a adição de ácidos ou bases, usada para estabilizar reações químicas e processos biológicos.",
+    image: "solucao-tampo.png"
+  },
+  {
+    term: "Viabilidade celular",
+    category: "Biologia",
+    definition: "Capacidade das células de manter suas funções essenciais, sendo um parâmetro importante em estudos de toxicidade e crescimento celular.",
+    image: "viabilidade-celular.png"
+  },
+  {
+    term: "Frascos de Erlenmeyer",
+    category: "Laboratório",
+    definition: "Recipientes de vidro com formato cônico usados em laboratórios para realizar misturas e aquecer substâncias.",
+    image: "frascos-de-erlenmeyer.png"
+  },
+  {
+    term: "Cianeto de potássio",
+    category: "Química",
+    definition: "Composto tóxico utilizado em processos industriais de extração de metais, com alta toxicidade devido à liberação de cianeto.",
+    image: "cianeto-de-potassio.png"
+  },
+  {
+    term: "Cianeto de hidrogênio",
+    category: "Química",
+    definition: "Composto altamente tóxico, utilizado em processos industriais e como agente químico, liberando cianeto ao ser metabolizado.",
+    image: "cianeto-de-hidrogenio.png"
+  },
+  {
+    term: "Cianeto de metil",
+    category: "Química",
+    definition: "Composto organometálico utilizado em processos de extração e síntese de produtos químicos, altamente tóxico e volátil.",
+    image: "cianeto-de-matil.png"
+  },
+  {
+    term: "Cianeto de butila",
+    category: "Química",
+    definition: "Composto tóxico e volátil usado em síntese química, com propriedades semelhantes a outros cianetos, mas com grupos butila.",
+    image: "cianeto-de-butila.png"
+  },
+  {
+    term: "Cianeto de etila",
+    category: "Química",
+    definition: "Composto altamente tóxico e inflamável utilizado em síntese orgânica e na produção de materiais e compostos químicos.",
+    image: "cianeto-de-etila.png"
+  },
+  {
+    term: "Cianeto de penitla",
+    category: "Química",
+    definition: "Composto químico potencialmente tóxico, utilizado principalmente em processos industriais, especialmente na extração de ouro e prata.",
+    image: "cianeto-de-penitla.png"
+  },
+  {
+    term: "Filtração simples",
+    category: "Laboratório",
+    definition: "Método físico de separação de sólidos de líquidos ou gases utilizando um filtro, com base no tamanho das partículas.",
+    image: "filtracao-simples.png"
+  },
+  {
+    term: "Filtração à vácuo",
+    category: "Laboratório",
+    definition: "Método de filtração em que se aplica vácuo para acelerar o processo de separação, geralmente utilizado para substâncias que têm baixa solubilidade.",
+    image: "filtracao-a-vacuo.png"
+  },
+  {
+    term: "Acetato de etila",
+    category: "Química",
+    definition: "Éster derivado do ácido acético e etanol, utilizado como solvente em indústrias de tintas, adesivos e cosméticos.",
+    image: "acetato-de-etila.png"
+  },
+  {
+    term: "Metanoato de etila",
+    category: "Química",
+    definition: "Éster do ácido fórmico e etanol, utilizado como solvente em processos industriais e como fragrância em produtos de consumo.",
+    image: "metanoato-de-etila.png"
+  },
+  {
+    term: "Isovalerato de etila",
+    category: "Química",
+    definition: "Éster do ácido isovaleriano e etanol, utilizado como aromatizante e em fragrâncias.",
+    image: "isovalerato-de-etila.png"
+  },
+  {
+    term: "3-Metil-butanoato de etila",
+    category: "Fenóis",
+    definition: "Éster do ácido 3-metilbutanoico e etanol, utilizado como aromatizante e fragrância.",
+    image: "3-metil-butanoato-de-etila.png"
+  },
+  {
+    term: "Hexanoato de etila",
+    category: "Química",
+    definition: "Éster do ácido hexanoico e etanol, utilizado como aromatizante e solvente em produtos industriais.",
+    image: "hexanoato-de-etila.png"
+  },
+  {
+    term: "Butanoato de etila",
+    category: "Química",
+    definition: "Éster do ácido butanoico e etanol, utilizado em fragrâncias e como agente aromatizante.",
+    image: "butanoato-de-etila.png"
+  },
+  {
+    term: "Propanoato de etila",
+    category: "Química",
+    definition: "Éster do ácido propanoico e etanol, utilizado em fragrâncias e como aromatizante.",
+    image: "propanoato-de-etila.png"
+  },
+  {
+    term: "Cloreto de etila",
+    category: "Química",
+    definition: "Composto utilizado como solvente e em processos de extração, bem como em anestesia local.",
+    image: "cloreto-de-etila.png"
+  },
+  {
+    term: "Cadeia acíclica normal",
+    category: "Química",
+    definition: "Estrutura molecular com átomos de carbono organizados de forma linear, sem ramificações.",
+    image: "cadeia-aciclica-normal.png"
+  },
+  {
+    term: "Cadeia acíclica ramificada",
+    category: "Química",
+    definition: "Estrutura molecular onde os átomos de carbono formam uma cadeia principal com ramificações laterais.",
+    image: "cadeia-aciclica-ramificada.png"
+  },
+  {
+    term: "Cadeias alicíclicas",
+    category: "Química",
+    definition: "Estruturas moleculares com átomos de carbono que formam anéis, mas sem a presença de ligações aromáticas.",
+    image: "cadeias-aliciclicas.png"
+  },
+  {
+    term: "Cadeia acíclica, saturada, ramificada heterogênea",
+    category: "Química",
+    definition: "Estrutura molecular com carbono formando uma cadeia linear, com átomos de hidrogênio saturando as ligações e ramificações heterogêneas.",
+    image: "cadeia-aciclica-saturada-ramificada-heterogenea.png"
+  },
+  {
+    term: "Hidrocarbonetos acíclicos e saturados",
+    category: "Química",
+    definition: "Moléculas de hidrocarbonetos que não contêm anéis e que têm apenas ligações simples entre os átomos de carbono.",
+    image: "hidrocarbonetos-aciclicos-saturados.png"
+  },
+  {
+    term: "Hidrocarbonetos acíclicos com uma tripla ligação",
+    category: "Química",
+    definition: "Hidrocarbonetos com uma cadeia acíclica e uma ligação tripla entre dois átomos de carbono.",
+    image: "hidrocarbonetos-aciclicos-com-uma-tripla-ligacao.png"
+  },
+  {
+    term: "Ácidos acíclicos e saturados",
+    category: "Química",
+    definition: "Ácidos orgânicos com cadeias de carbono acíclicas e que possuem apenas ligações simples entre os átomos de carbono.",
+    image: "acidos-aciclicos-saturados.png"
+  },
+  {
+    term: "Ligação iônica",
+    category: "Química",
+    definition: "Tipo de ligação química em que um átomo doa elétrons para outro átomo, formando íons positivos e negativos que se atraem.",
+    image: "ligacao-ionica.png"
+  },
+  {
+    term: "Compostos iônicos solúveis em água",
+    category: "Química",
+    definition: "Compostos que, quando dissolvidos em água, se dissociam em íons, como o cloreto de sódio.",
+    image: "compostos-ionicos-soliveis-em-agua.png"
+  },
+  {
+    term: "Brix refratométrico",
+    category: "Química",
+    definition: "Escala usada para medir a concentração de açúcares em soluções, com base na refração da luz.",
+    image: "brix-refratometrico.png"
+  },
+  {
+    term: "Solução-padrão de iodo",
+    category: "Laboratório",
+    definition: "Solução de iodo com concentração conhecida, usada para titulação em análise quantitativa.",
+    image: "solucao-padrao-de-iodo.png"
+  },
+  {
+    term: "Soluções alcalinas",
+    category: "Química",
+    definition: "Soluções que contêm uma base dissolvida, com pH superior a 7.",
+    image: "solucoes-alcalinas.png"
+  },
+  {
+    term: "Metais alcalinos terrosos",
+    category: "Química",
+    definition: "Grupo de metais altamente reativos, como o magnésio e o cálcio, localizados na segunda coluna da tabela periódica.",
+    image: "metais-alcalinos-terrosos.png"
+  },
+  {
+    term: "Solubilização com água",
+    category: "Química",
+    definition: "Processo em que uma substância se dissolve em água, formando uma solução homogênea.",
+    image: "solubilizacao-com-agua.png"
+  },
+  {
+    term: "Solubilização com ácido clorídrico",
+    category: "Química",
+    definition: "Processo de dissolução de substâncias em ácido clorídrico para realizar reações químicas ou extrair compostos.",
+    image: "solubilizacao-com-acido-cloridrico.png"
+  },
+  {
+    term: "Solubilização com ácido nítrico",
+    category: "Química",
+    definition: "Processo em que uma substância é dissolvida em ácido nítrico, frequentemente utilizado em reações de oxidação e dissolução de metais.",
+    image: "solubilizacao-com-acido-nitrico.png"
+  },
+  {
+    term: "Solubilização com água-régia",
+    category: "Química",
+    definition: "Processo de dissolução usando uma mistura de ácido clorídrico e ácido nítrico, conhecida como água-régia, capaz de dissolver metais nobres como o ouro.",
+    image: "solubilizacao-com-agua-regia.png"
+  },
+  {
+    term: "Solubilização com ácido fluorídrico",
+    category: "Química",
+    definition: "Dissolução de substâncias utilizando ácido fluorídrico, geralmente usada para dissolver sílica e outros compostos inorgânicos.",
+    image: "solubilizacao-com-acido-fluoridrico.png"
+  },
+  {
+    term: "Solução titulada",
+    category: "Laboratório",
+    definition: "Solução cuja concentração de uma substância é conhecida, utilizada em titulações para determinar a concentração de outra substância.",
+    image: "solucao-titulada.png"
+  },
+  {
+    term: "Indicador Negro de Eriocromo",
+    category: "Laboratório",
+    definition: "Indicador de pH utilizado em titulações complexométricas, especialmente em titulação de cálcio e magnésio.",
+    image: "indicador-negro-de-eriocromo.png"
+  },
+  {
+    term: "Ágar inclinado",
+    category: "Laboratório",
+    definition: "Meio de cultura sólido usado para o cultivo de microorganismos, que é preparado em tubos inclinados para aumentar a superfície de contato.",
+    image: "agar-inclinado.png"
+  },
+  {
+    term: "Água deionizada",
+    category: "Química",
+    definition: "Água que passou por um processo de remoção de íons, tornando-a livre de minerais e impurezas.",
+    image: "agua-deionizada.png"
+  },
+  {
+    term: "Compostos iônicos",
+    category: "Química",
+    definition: "Compostos formados por íons positivos e negativos, geralmente com ligações iônicas fortes.",
+    image: "compostos-ionicos.png"
+  },
+  {
+    term: "Ácidos sulfônicos",
+    category: "Química",
+    definition: "Ácidos orgânicos contendo o grupo funcional -SO₃H, comumente usados como surfactantes ou em detergentes.",
+    image: "acidos-sulfonicos.png"
+  },
+  {
+    term: "Ácido benzeno sulfônico",
+    category: "Química",
+    definition: "Composto aromático contendo um grupo sulfônico (-SO₃H) ligado a um anel benzeno, usado na produção de corantes e detergentes.",
+    image: "acido-benzeno-sulfonico.png"
+  },
+  {
+    term: "Compostos de Grignard",
+    category: "Química",
+    definition: "Compostos organometálicos contendo um átomo de magnésio ligado a um grupo alquila ou arila, usados como reagentes em sínteses orgânicas.",
+    image: "compostos-de-grignard.png"
+  },
+  {
+    term: "Compostos de Função Mista",
+    category: "Química",
+    definition: "Compostos que contêm mais de um tipo de grupo funcional em sua estrutura, como álcoois e ácidos.",
+    image: "compostos-de-funcao-mista.png"
+  },
+  {
+    term: "Sulfato de cobre",
+    category: "Química",
+    definition: "Composto de cobre usado como fungicida e algicida, amplamente utilizado em agricultura e laboratório.",
+    image: "sulfato-de-cobre.png"
+  },
+  {
+    term: "Sulfato de sódio",
+    category: "Química",
+    definition: "Sal inorgânico de sódio, utilizado em detergentes e na produção de vidro.",
+    image: "sulfato-de-sodio.png"
+  },
+  {
+    term: "Sulfato de cobre pentahidratado",
+    category: "Química",
+    definition: "Forma hidratada do sulfato de cobre, com cinco moléculas de água, comumente usada em processos de galvanoplastia e como fungicida.",
+    image: "sulfato-de-cobre-pentahidratado.png"
+  },
+  {
+    term: "Sulfato de magnésio dissolvido",
+    category: "Química",
+    definition: "Sal utilizado em fertilizantes, como laxante e em soluções de Epsom.",
+    image: "sulfato-de-magnesio-dissolvido.png"
+  },
+  {
+    term: "Álcool etílico hidratado",
+    category: "Química",
+    definition: "Álcool etílico que contém uma certa quantidade de água, comumente usado como combustível ou solvente.",
+    image: "alcool-etilico-hidratado.png"
+  },
+  {
+    term: "Água de adsorção",
+    category: "Química",
+    definition: "Água que foi adsorvida por um material, como em processos de secagem ou purificação de substâncias.",
+    image: "agua-de-adsorcao.png"
+  },
+  {
+    term: "Etanolato de sódio",
+    category: "Química",
+    definition: "Composto orgânico contendo sódio, utilizado como base forte em reações orgânicas, como sínteses de compostos orgânicos.",
+    image: "etanolato-de-sodio.png"
+  },
+  {
+    term: "Agente tensoativo",
+    category: "Química",
+    definition: "Substância que reduz a tensão superficial entre dois líquidos ou entre um líquido e um sólido, sendo usada em detergentes e cosméticos.",
+    image: "agente-tensoativo.png"
+  },
+  {
+    term: "Benzeno sulfônico",
+    category: "Química",
+    definition: "Composto aromático com um grupo sulfônico (-SO₃H) ligado ao benzeno, utilizado na fabricação de detergentes e corantes.",
+    image: "benzeno-sulfonico.png"
+  },
+  {
+    term: "Ânion carboxila",
+    category: "Química",
+    definition: "Íon derivado dos ácidos carboxílicos, formado quando o grupo carboxila (-COOH) perde um próton.",
+    image: "anion-carboxila.png"
+  },
+  {
+    term: "Carbono terciário",
+    category: "Química",
+    definition: "Átomo de carbono ligado a três grupos ou átomos diferentes, sendo um tipo de carbono encontrado em compostos orgânicos.",
+    image: "carbono-terciario.png"
+  },
+  {
+    term: "Carbono secundário",
+    category: "Química",
+    definition: "Átomo de carbono ligado a dois outros átomos de carbono, encontrado em moléculas com ligações covalentes em cadeia.",
+    image: "carbono-secundario.png"
+  },
+  {
+    term: "Carbono primário",
+    category: "Química",
+    definition: "Átomo de carbono ligado a um único átomo de carbono e a outros átomos, como hidrogênio ou grupos funcionais.",
+    image: "carbono-primario.png"
+  },
+  {
+    term: "Série isóloga",
+    category: "Química",
+    definition: "Sequência de compostos orgânicos que possuem o mesmo tipo de grupo funcional e variação na estrutura molecular.",
+    image: "serie-isologa.png"
+  },
+  {
+    term: "Séries heterólogas",
+    category: "Química",
+    definition: "Séries de compostos que diferem por grupos funcionais, resultando em diferentes propriedades e reatividade.",
+    image: "series-heterologas.png"
+  },
+  {
+    term: "Séries homólogas",
+    category: "Química",
+    definition: "Séries de compostos que diferem por um número fixo de átomos ou grupos, como ácidos graxos ou álcoois.",
+    image: "series-homologas.png"
+  },
+  {
+    term: "Tubos polarimétricos",
+    category: "Laboratório",
+    definition: "Tubos utilizados em experimentos de polarimetria para medir a rotação ótica de substâncias que afetam a luz polarizada.",
+    image: "tubos-polarimetricos.png"
+  },
+  {
+    term: "Cloreto de amônio sólido",
+    category: "Química",
+    definition: "Composto sólido usado em reações químicas, como na preparação de ácidos e na produção de fertilizantes.",
+    image: "cloreto-de-amonio-solido.png"
+  },
+  {
+    term: "Base forte",
+    category: "Química",
+    definition: "Base que se dissocia completamente em solução aquosa, liberando uma grande quantidade de íons hidróxido.",
+    image: "base-forte.png"
+  },
+  {
+    term: "Hidróxido de amônio",
+    category: "Química",
+    definition: "Composto químico formado pela reação de amônia com água, frequentemente usado como solução de limpeza.",
+    image: "hidroxido-de-amonio.png"
+  },
+  {
+    term: "Carbonato de amônio",
+    category: "Química",
+    definition: "Sal inorgânico utilizado na indústria e como fertilizante, comumente encontrado em processos de fabricação de produtos químicos.",
+    image: "carbonato-de-amonio.png"
+  },
+  {
+    term: "Sulfato de amônio",
+    category: "Química",
+    definition: "Sal utilizado principalmente como fertilizante agrícola devido ao seu conteúdo de nitrogênio e enxofre.",
+    image: "sulfato-de-amonio.png"
+  },
+  {
+    term: "Sais de amônio",
+    category: "Química",
+    definition: "Sais formados pela reação de ácidos com amônia, comumente utilizados em fertilizantes e em processos químicos industriais.",
+    image: "sais-de-amonio.png"
+  },
+  {
+    term: "Nitrato de magnésio",
+    category: "Química",
+    definition: "Composto inorgânico utilizado em fertilizantes e na fabricação de produtos químicos.",
+    image: "nitrato-de-magnesio.png"
+  },
+  {
+    term: "Comprimidos de indicador-tampão",
+    category: "Laboratório",
+    definition: "Comprimidos que liberam uma solução tampão de pH controlado, usados para calibrar e estabilizar o pH em experimentos.",
+    image: "comprimidos-de-indicador-tampao.png"
+  },
+  {
+    term: "Negro de Eriocromo",
+    category: "Química",
+    definition: "Indicador utilizado em titulações complexométricas para a determinação de cátions metálicos.",
+    image: "negro-de-eriocromo.png"
+  },
+  {
+    term: "Tetraborato de amônio",
+    category: "Química",
+    definition: "Sal usado como reagente e conservante em diversas reações químicas.",
+    image: "tetraborato-de-amonio.png"
+  },
+  {
+    term: "Ácido sulfúrico padronizado",
+    category: "Química",
+    definition: "Ácido sulfúrico de concentração conhecida, utilizado em reações químicas e como padrão em titulações.",
+    image: "acido-sulfurico-padronizado.png"
+  },
+  {
+    term: "Gás carbônico",
+    category: "Química",
+    definition: "Composto formado por dióxido de carbono (CO₂), um gás resultante da respiração e de processos de combustão.",
+    image: "gas-carbonico.png"
+  },
+  {
+    term: "Compostos clorados",
+    category: "Química",
+    definition: "Compostos que contêm cloro em sua estrutura, comumente usados como desinfetantes e solventes.",
+    image: "compostos-clorados.png"
+  },
+  {
+    term: "Trompa de vácuo",
+    category: "Laboratório",
+    definition: "Equipamento utilizado para criar vácuo em experimentos, removendo o ar ou gases de um recipiente.",
+    image: "trompa-de-vacuo.png"
+  },
+  {
+    term: "Ácido - hidroxibutírico",
+    category: "Química",
+    definition: "Ácido carboxílico de cadeia curta utilizado em reações bioquímicas e como intermediário na produção de compostos químicos.",
+    image: "acido-hidroxibutirico.png"
+  },
+  {
+    term: "Éter metil terc-butílico",
+    category: "Química",
+    definition: "Éter composto por grupos metil e terc-butílico, usado como solvente em várias reações químicas.",
+    image: "eter-metil-terc-butilico.png"
+  },
+  {
+    term: "Potencial Hidrogeniônico",
+    category: "Química",
+    definition: "Valor que expressa a concentração de íons hidrogênio em uma solução, também conhecido como pH.",
+    image: "potencial-hidrogenionico.png"
+  },
+  {
+    term: "Nitrato de níquel(II) hexahidratado",
+    category: "Química",
+    definition: "Composto formado pela combinação de níquel e ácido nítrico, com seis moléculas de água associadas, utilizado em reações de eletrodeposição.",
+    image: "nitrato-de-nickel-hexahidratado.png"
+  },
+  {
+    term: "Série Heteróloga",
+    category: "Química",
+    definition: "Série de compostos que diferem por grupos funcionais e apresentam diferentes propriedades e reatividade.",
+    image: "serie-heterologa.png"
+  },
+  {
+    term: "Trinitrato de glicerina",
+    category: "Química",
+    definition: "Também conhecido como nitroglicerina, é um composto utilizado como explosivo e em medicamentos como vasodilatador.",
+    image: "trinitrato-de-glicerina.png"
+  },
+  {
+    term: "Celulose trinitrada",
+    category: "Química",
+    definition: "Composto obtido pela nitratação da celulose, utilizado em explosivos, como a pólvora sem fumaça.",
+    image: "celulose-trinitrada.png"
+  },
+  {
+    term: "Extratores catiônicos",
+    category: "Química",
+    definition: "Substâncias que ajudam a separar cátions de uma solução, muitas vezes usados em processos de purificação e extração.",
+    image: "extratores-cationicos.png"
+  },
+  {
+    term: "Sulfato de chumbo",
+    category: "Química",
+    definition: "Composto inorgânico de chumbo, um sólido branco pouco solúvel em água, utilizado em alguns processos químicos e industriais.",
+    image: "sulfato-de-chumbo.png"
+  },
+        ];
+
+        function removeAcentos(text) {
+            return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function updateTermCards(category = '', searchTerm = '') {
+    const container = document.getElementById('card-container');
+    container.innerHTML = '';
+
+    const filteredTerms = terms.filter(term =>
+        (category === '' || term.category === category) &&
+        (searchTerm === '' || removeAcentos(term.term.toLowerCase()).includes(removeAcentos(searchTerm.toLowerCase())))
+    );
+
+    filteredTerms.sort((a, b) => a.term.localeCompare(b.term));
+
+    filteredTerms.forEach(term => {
+        const card = document.createElement('div');
+        card.className = 'card'; 
+        card.innerHTML = `
+    <img src="${term.image}" alt="${term.term}" class="card-image">
+    <div class="card-content">
+        <div class="card-title">${term.term}</div>
+        <div class="card-category">${term.category || 'Indefinida'}</div>
+        <button class="card-button" onclick="openModal('${term.term}')">SAIBA MAIS</button>
+    </div>
+`;
+        container.appendChild(card);
+    });
+
+    container.style.display = 'flex';
+    container.style.flexWrap = 'wrap';
+}
+
+
+        function createCategoryNav() {
+            const categories = [...new Set(terms.map(term => term.category))];
+            const nav = document.getElementById('category-nav');
+            categories.forEach(category => {
+                const link = document.createElement('a');
+                link.href = '#';
+                link.textContent = category;
+                link.dataset.category = category;
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const isActive = link.classList.contains('active');
+                    document.querySelectorAll('#category-nav a').forEach(a => a.classList.remove('active'));
+                    if (!isActive) {
+                        link.classList.add('active');
+                        updateTermCards(category, document.getElementById('search-input').value);
+                    } else {
+                        updateTermCards('', document.getElementById('search-input').value);
+                    }
+                });
+                nav.appendChild(link);
+            });
+        }
+
+        function openModal(term) {
+    const selectedTerm = terms.find(t => t.term === term);
+
+    if (selectedTerm) {
+        document.getElementById('modal-image').src = selectedTerm.image;
+        document.getElementById('modal-title').textContent = selectedTerm.term;
+        document.getElementById('modal-description').textContent = selectedTerm.definition || 'Descrição não disponível.';
+        document.getElementById('modal-category').textContent = `Categoria: ${selectedTerm.category || 'Indefinida.'} `;
+
+        const modal = document.getElementById('modal-frame');
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+    }
+}
+
+document.querySelector('.modal-close').addEventListener('click', () => {
+    const modal = document.getElementById('modal-frame');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+});
+
+document.addEventListener('click', (event) => {
+    const modal = document.getElementById('modal-frame');
+    if (event.target === modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
+});
+
+
+        document.getElementById('search-input').addEventListener('input', () => {
+            const category = document.querySelector('#category-nav a.active')?.dataset.category || '';
+            const searchTerm = document.getElementById('search-input').value;
+            updateTermCards(category, searchTerm);
+        });
+
+        createCategoryNav();
+        updateTermCards();
+    </script>
+</body>
+</html>

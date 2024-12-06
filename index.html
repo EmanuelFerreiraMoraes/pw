@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="src/styles/styles.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <title>Quimepedia</title>
+</head>
+<body>
+    <header>
+        <nav id="navbar">
+            <i class="fa-solid fa-atom" id="nav_logo"> Quimepedia</i>
+
+            <ul id="nav_list">
+                <li class="nav-item active">
+                    <a href="#home">Início</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#menu">Serviços</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#testimonials">Sobre Nós</a>
+                </li>
+            </ul>
+
+            <button id="mobile_btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+
+        <div id="mobile_menu">
+            <ul id="mobile_nav_list">
+                <li class="nav-item">
+                    <a href="#home">Início</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#menu">Serviços</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#testimonials">Sobre Nós</a>
+                </li>
+            </ul>
+
+        </div>
+    </header>
+
+    <main id="content">
+        <section id="home">
+            <div class="shape"></div>
+            <div id="cta">
+                <h1 class="title">
+                    Acesse o
+                    <span>Dicionário</span>
+                </h1>
+
+                <p class="description">
+                    O Dicionário Químico Interativo foi desenvolvido para atender à necessidade de uma ferramenta prática e acessível para estudantes, professores e entusiastas da química. Ele facilita a busca por termos técnicos.
+                </p>
+
+                <div id="cta_buttons">
+                    <a href="#menu" class="btn-default">
+                        Saiba mais
+                    </a>
+                </div>
+
+            </div>
+
+            <div id="banner">
+                <img src="src/images/inicio.gif" alt="">
+            </div>
+        </section>
+
+        <section id="menu">
+            <h2 class="section-title">Serviços</h2>
+            <h3 class="section-subtitle">O que oferecemos em nosso site</h3>
+
+            <div id="dishes">
+                <div class="dish">
+
+
+                    <img src="src/images/icon.png" class="dish-image" alt="">
+
+                    <h3 class="dish-title">
+                        Dicionário Químico
+                    </h3>
+
+                    <span class="dish-description">
+                        Ferramenta para pesquisa e consulta de termos organizados por categorias.
+                    </span>
+
+                        <button class="btn-default" onclick="openModal('modal1', 'dicionario.html')">
+                            Acesse aqui
+                        </button>
+                </div>
+
+                <div class="dish">
+
+
+                    <img src="src/images/icon2.png" class="dish-image" alt="">
+
+                    <h3 class="dish-title">
+                        Tabela Periódica Interativa
+                    </h3>
+
+                    <span class="dish-description">
+                        Visualize os elementos químicos e suas propriedades em uma interface interativa.
+                    </span>
+
+                        <button class="btn-default" onclick="openModal('modal2', 'tabela.html')">
+                            Acesse aqui
+                        </button>
+                </div>
+
+                <div class="dish">
+
+
+                    <img src="src/images/icon3.png" class="dish-image" alt="">
+
+                    <h3 class="dish-title">
+                        Cientistas
+                    </h3>
+
+                    <span class="dish-description">
+                        Saiba um pouco mais sobre os principais cientistas e suas áreas de atuação.
+                    </span>
+
+                        <button class="btn-default" onclick="openModal('modal3', 'cientistas.html')">
+                            Acesse aqui
+                        </button>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials">
+            <img src="src/images/etec.jpg" id="testimonial_chef" alt="">
+
+            <div id="testimonials_content">
+                <h2 class="section-title">
+                    Sobre Nós
+                </h2>
+                <h3 class="section-subtitle">
+                    Para a realização do projeto, contamos com a orientação dos seguintes professores:
+                </h3>
+
+                <div id="feedbacks">
+                    <div class="feedback">
+                        <img src="src/images/daniela.jpg" class="feedback-avatar" alt="">
+
+                        <div class="feedback-content">
+                            <h3 class="dish-title">  
+                                Daniela da Silva Soncini
+                            </h3>
+                            <p>
+                                
+                                Docente e coordenadora no ensino médio e técnico do Centro Estadual de Tecnologia Paula Souza, na ETEC de Elias Nechar em Catanduva-SP.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="feedback">
+                        <img src="src/images/sergio.jpg" class="feedback-avatar" alt="">
+
+                        <div class="feedback-content">
+                            <h3 class="dish-title">  
+                                Sérgio Augusto Pelicano Jr
+                            </h3>
+                            <p>
+                                Mestre em Gestão e Tecnologia em Sistemas Produtivos, com foco em Ciência da Computação e especialização em Sistemas de Informação.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-default" onclick="openModal('modal4', 'sobre.html')">
+                    Ver mais Informações
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal" id="modal1">
+        <div class="modal-content">
+          <button class="btn-default2" onclick="closeModal('modal1')">Fechar</button>
+          <iframe id="iframe1"></iframe>
+        </div>
+      </div>
+    
+      <div class="modal" id="modal2">
+        <div class="modal-content">
+            <button class="btn-default2" onclick="closeModal('modal2')">Fechar</button>
+          <iframe id="iframe2"></iframe>
+        </div>
+      </div>
+    
+      <div class="modal" id="modal3">
+        <div class="modal-content">
+            <button class="btn-default2" onclick="closeModal('modal3')">Fechar</button>
+          <iframe id="iframe3"></iframe>
+        </div>
+      </div>
+    
+      <div class="modal" id="modal4">
+        <div class="modal-content">
+            <button class="btn-default2" onclick="closeModal('modal4')">Fechar</button>
+          <iframe id="iframe4"></iframe>
+        </div>
+      </div>
+
+    <footer>
+
+        <div id="footer_items">
+            <img src="src/images/cps.png" alt="">
+
+            <div class="social-media-buttons">
+                <a href="https://www.cps.sp.gov.br" target="_blank">
+                    <i class="fa-brands fa-google"></i>
+                </a>
+
+                <a href="https://www.instagram.com/centropaulasouza/" target="_blank">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+
+                <a href="https://www.facebook.com/centropaulasouza/" target="_blank">
+                    <i class="fa-brands fa-facebook"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+    <script src="src/javascript/script.js"></script>
+</body>
+</html>

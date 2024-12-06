@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dicionário</title>
+    <link rel="stylesheet" href="src/styles/dicionario.css">
+</head>
+<body>
+
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Pesquise um cientista...">
+    </div>
+
+    <div class="category-links" id="category-nav"></div>
+
+    <div id="card-container" class="card-container"></div>
+
+    <div id="modal-frame" class="modal hidden">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <img id="modal-image" class="modal-image" src="" alt="">
+            <div class="modal-text">
+                <h2 id="modal-title"></h2>
+                <p id="modal-category"></p>
+                <p id="modal-description"></p>
+            </div>
+        </div>
+    </div>
+    
+    
+
+    <script>
+        const terms = [
+  {
+    term: "Auguste Piccard",
+    category: "Física Aplicada",
+    definition: "Pioneiro da exploração estratosférica, abriu caminho para a exploração espacial.",
+    image: "src/images/auguste-piccard.jpeg"
+  },
+  {
+    term: "Émile Henriot",
+    category: "Física Teórica",
+    definition: "Renomado matemático, destacou-se por suas contribuições para a teoria dos números.",
+    image: "src/images/emile-henriot.jpeg"
+  },
+  {
+    term: "Paul Ehrenfest",
+    category: "Física Teórica",
+    definition: "Desempenhou um papel crucial na divulgação da teoria da relatividade de Einstein.",
+    image: "src/images/paul-ehrenfest.jpeg"
+  },
+  {
+    term: "Édouard Herzen",
+    category: "Termodinâmica",
+    definition: "Fez importantes avanços na eletroquímica e no estudo dos efeitos magnéticos.",
+    image: "src/images/edouard-herzen.jpeg"
+  },
+  {
+    term: "Théophile de Donder",
+    category: "Termodinâmica",
+    definition: "Contribuiu significativamente para a termodinâmica e a mecânica estatística.",
+    image: "src/images/theophile-de-donder.jpeg"
+  },
+  {
+    term: "Erwin Schrödinger",
+    category: "Física Quântica",
+    definition: "Famoso pelo desenvolvimento da equação de onda quântica, revolucionou a teoria quântica.",
+    image: "src/images/erwin-schrodinger.jpeg"
+  },
+  {
+    term: "Jules-Émile Verschaffelt",
+    category: "Física Aplicada",
+    definition: "Fez contribuições notáveis para a aerodinâmica e a teoria do voo.",
+    image: "src/images/jules-emile-verschaffelt.jpeg"
+  },
+  {
+    term: "Wolfgang Pauli",
+    category: "Física Quântica",
+    definition: "Formulou o princípio da exclusão de Pauli, fundamental para a compreensão dos elétrons.",
+    image: "src/images/wolfgang-pauli.jpeg"
+  },
+  {
+    term: "Werner Heisenberg",
+    category: "Física Quântica",
+    definition: "Desenvolveu o princípio da incerteza, sendo um dos pais da mecânica quântica.",
+    image: "src/images/werner-heisenberg.jpeg"
+  },
+  {
+    term: "Ralph Fowler",
+    category: "Física Teórica",
+    definition: "Fez importantes contribuições para a teoria quântica e a física estatística.",
+    image: "src/images/ralph-fowler.jpeg"
+  },
+  {
+    term: "Léon Brillouin",
+    category: "Física Aplicada",
+    definition: "Pioneiro na teoria da informação e na teoria dos sólidos.",
+    image: "src/images/leon-brillouin.jpeg"
+  },
+  {
+    term: "Peter Debye",
+    category: "Física Teórica",
+    definition: "Conhecido por seu trabalho em estrutura molecular e difração de raios X, laureado com o Nobel de Química.",
+    image: "src/images/peter-debye.jpeg"
+  },
+  {
+    term: "Martin Knudsen",
+    category: "Física Aplicada",
+    definition: "Notabilizou-se pelos estudos em cinética de gases e transferência de calor.",
+    image: "src/images/martin-knudsen.jpeg"
+  },
+  {
+    term: "William Lawrence Bragg",
+    category: "Física Teórica",
+    definition: "Contribuiu para o desenvolvimento da cristalografia de raios X, vencedor do Nobel de Física.",
+    image: "src/images/william-lawrence-bragg.jpeg"
+  },
+  {
+    term: "Hendrik Anthony Kramers",
+    category: "Física Teórica",
+    definition: "Trabalhou na interpretação e desenvolvimento da mecânica quântica.",
+    image: "src/images/hendrik-anthony-kramers.jpeg"
+  },
+  {
+    term: "Paul Dirac",
+    category: "Física Quântica",
+    definition: "Formulou a equação que descreve o comportamento do elétron, conhecida como equação de Dirac.",
+    image: "src/images/paul-dirac.jpeg"
+  },
+  {
+    term: "Arthur Compton",
+    category: "Física Aplicada",
+    definition: "Realizou experimentos pioneiros sobre o espalhamento de raios X e a natureza da luz, laureado com o Nobel de Física.",
+    image: "src/images/arthur-compton.jpeg"
+  },
+  {
+    term: "Louis de Broglie",
+    category: "Física Quântica",
+    definition: "Propôs a hipótese da natureza ondulatória da matéria.",
+    image: "src/images/louis-de-broglie.jpeg"
+  },
+  {
+    term: "Max Born",
+    category: "Física Quântica",
+    definition: "Contribuiu para o desenvolvimento da teoria quântica e a interpretação probabilística, vencedor do Nobel de Física.",
+    image: "src/images/max-born.jpeg"
+  },
+  {
+    term: "Niels Bohr",
+    category: "Física Quântica",
+    definition: "Formulou o modelo atômico de Bohr e contribuiu para a compreensão dos fenômenos nucleares.",
+    image: "src/images/niels-bohr.jpeg"
+  },
+        ];
+
+        function removeAcentos(text) {
+            return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function updateTermCards(category = '', searchTerm = '') {
+    const container = document.getElementById('card-container');
+    container.innerHTML = '';
+
+    const filteredTerms = terms.filter(term =>
+        (category === '' || term.category === category) &&
+        (searchTerm === '' || removeAcentos(term.term.toLowerCase()).includes(removeAcentos(searchTerm.toLowerCase())))
+    );
+
+    filteredTerms.sort((a, b) => a.term.localeCompare(b.term));
+
+    filteredTerms.forEach(term => {
+        const card = document.createElement('div');
+        card.className = 'card'; 
+        card.innerHTML = `
+    <img src="${term.image}" alt="${term.term}" class="card-image">
+    <div class="card-content">
+        <div class="card-title">${term.term}</div>
+        <div class="card-category">${term.category || 'Indefinida'}</div>
+        <button class="card-button" onclick="openModal('${term.term}')">SAIBA MAIS</button>
+    </div>
+`;
+        container.appendChild(card);
+    });
+
+    container.style.display = 'flex';
+    container.style.flexWrap = 'wrap';
+}
+
+
+        function createCategoryNav() {
+            const categories = [...new Set(terms.map(term => term.category))];
+            const nav = document.getElementById('category-nav');
+            categories.forEach(category => {
+                const link = document.createElement('a');
+                link.href = '#';
+                link.textContent = category;
+                link.dataset.category = category;
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const isActive = link.classList.contains('active');
+                    document.querySelectorAll('#category-nav a').forEach(a => a.classList.remove('active'));
+                    if (!isActive) {
+                        link.classList.add('active');
+                        updateTermCards(category, document.getElementById('search-input').value);
+                    } else {
+                        updateTermCards('', document.getElementById('search-input').value);
+                    }
+                });
+                nav.appendChild(link);
+            });
+        }
+
+        function openModal(term) {
+    const selectedTerm = terms.find(t => t.term === term);
+
+    if (selectedTerm) {
+        document.getElementById('modal-image').src = selectedTerm.image;
+        document.getElementById('modal-title').textContent = selectedTerm.term;
+        document.getElementById('modal-description').textContent = selectedTerm.definition || 'Descrição não disponível.';
+        document.getElementById('modal-category').textContent = `Categoria: ${selectedTerm.category || 'Indefinida.'} `;
+
+        const modal = document.getElementById('modal-frame');
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+    }
+}
+
+document.querySelector('.modal-close').addEventListener('click', () => {
+    const modal = document.getElementById('modal-frame');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+});
+
+document.addEventListener('click', (event) => {
+    const modal = document.getElementById('modal-frame');
+    if (event.target === modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
+});
+
+
+        document.getElementById('search-input').addEventListener('input', () => {
+            const category = document.querySelector('#category-nav a.active')?.dataset.category || '';
+            const searchTerm = document.getElementById('search-input').value;
+            updateTermCards(category, searchTerm);
+        });
+
+        createCategoryNav();
+        updateTermCards();
+    </script>
+</body>
+</html>
